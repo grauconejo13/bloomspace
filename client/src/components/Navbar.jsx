@@ -1,18 +1,24 @@
 function Navbar() {
   return (
-    <nav
-      style={{
-        backgroundColor: "#4caf50",
-        color: "white",
-        padding: "1rem",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <h2>Bloomspace 🌸</h2>
+    <nav className="w-full px-6 py-4 sticky top-0 z-10 bg-cream border-b border-sage-light/30">
+      <div className="max-w-5xl mx-auto flex justify-between items-center">
+        <span className="font-heading text-xl font-semibold tracking-wide text-moss">
+          🌸 Bloomspace
+        </span>
 
-      <div>Home | Garden | Plant Flower | About</div>
+        <ul className="flex gap-8 list-none m-0 p-0">
+          {['Home', 'Garden', 'Plant a Flower', 'About'].map((link) => (
+            <li key={link}>
+              <a
+                href="#"
+                className="text-sm font-medium no-underline text-sage hover:text-moss transition-colors duration-200"
+              >
+                {link}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </nav>
   );
 }
