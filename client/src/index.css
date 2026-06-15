@@ -1,19 +1,28 @@
 @import "tailwindcss";
 
 @theme {
-  --color-cream: #faf8f4;
-  --color-cream-dark: #f0ebe0;
-  --color-sage: #6b8f6a;
-  --color-sage-light: #9bb89a;
-  --color-sage-dark: #4a6649;
+  /* Warm cream foundation */
+  --color-cream: #faf6ef;
+  --color-cream-dark: #f2e9d8;
+  --color-cream-panel: #fffbf5;
+
+  /* Garden greens */
+  --color-sage: #7aab78;
+  --color-sage-light: #b8d4b6;
+  --color-sage-dark: #4a7048;
   --color-moss: #2d4a2c;
-  --color-petal: #e8d5c4;
+
+  /* Soft accent palette */
+  --color-petal: #f2c8b0;
+  --color-lavender: #c4b5d4;
+  --color-mist: #b8d8e8;
+  --color-bloom: #f5bfbf;
 }
 
 body {
-  background-color: #faf8f4;
+  background-color: #faf6ef;
   font-family: 'Nunito', system-ui, sans-serif;
-  color: #2d3a2e;
+  color: #2d4a2c;
   margin: 0;
 }
 
@@ -25,4 +34,33 @@ body {
 
 .font-heading {
   font-family: 'Playfair Display', Georgia, serif;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); opacity: 0.55; }
+  50%       { transform: translateY(-7px); opacity: 0.78; }
+}
+
+.sparkle {
+  animation: float 5s ease-in-out infinite;
+}
+
+@keyframes drift {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-5px); }
+}
+
+.card-float {
+  animation: drift 7s ease-in-out infinite;
+}
+
+@keyframes pollen-drift {
+  0%   { transform: translateY(0) translateX(0);      opacity: 0; }
+  15%  {                                               opacity: 0.65; }
+  85%  {                                               opacity: 0.40; }
+  100% { transform: translateY(-42px) translateX(10px); opacity: 0; }
+}
+
+.pollen {
+  animation: pollen-drift ease-in-out infinite;
 }
