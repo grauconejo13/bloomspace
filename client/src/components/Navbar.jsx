@@ -1,29 +1,32 @@
-function Navbar() {
-  return (
-    <nav
-      className="w-full px-8 md:px-12 py-4 sticky top-0 z-50 border-b border-sage-light/20"
-      style={{ background: 'rgba(250, 246, 239, 0.82)', backdropFilter: 'blur(14px)' }}
-    >
-      <div className="w-full flex justify-between items-center">
-        <span
-          className="font-heading text-xl font-semibold tracking-wide text-moss"
-          style={{ textShadow: '0 0 18px rgba(122, 171, 120, 0.4)' }}
-        >
-          ✿ Bloomspace
-        </span>
+import { NavLink } from "react-router-dom";
 
-        <ul className="hidden sm:flex gap-1 list-none m-0 p-0">
-          {['Home', 'Garden', 'Plant a Flower', 'About'].map((link) => (
-            <li key={link}>
-              <a
-                href="#"
-                className="text-sm font-medium no-underline text-sage-dark/80 hover:text-moss px-4 py-1.5 rounded-full transition-all duration-200 hover:bg-sage-light/20 inline-block"
-              >
-                {link}
-              </a>
-            </li>
-          ))}
-        </ul>
+function Navbar() {
+  const linkClass = ({ isActive }) =>
+    isActive
+      ? "text-moss font-semibold"
+      : "text-sage-dark hover:text-moss transition-colors";
+
+  return (
+    <nav className="w-full px-6 py-4">
+      <div className="flex w-full items-center justify-between">
+        <NavLink to="/" className="font-heading text-xl text-moss">
+          ✿ Bloomspace
+        </NavLink>
+
+        <div className="flex gap-6 text-sm">
+          <NavLink to="/" className={linkClass}>
+            Home
+          </NavLink>
+          <NavLink to="/garden" className={linkClass}>
+            Garden
+          </NavLink>
+          <NavLink to="/create" className={linkClass}>
+            Plant a Flower
+          </NavLink>
+          <NavLink to="/about" className={linkClass}>
+            About
+          </NavLink>
+        </div>
       </div>
     </nav>
   );
