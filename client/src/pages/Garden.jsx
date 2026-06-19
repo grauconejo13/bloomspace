@@ -1,6 +1,18 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import GardenGrid from '../components/GardenGrid';
 
-const FLOWERS = [
+function formatAge(isoString) {
+  const mins = Math.round((Date.now() - new Date(isoString).getTime()) / 60000);
+  if (mins < 1)  return 'just now';
+  if (mins < 60) return `${mins} min ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days} day${days !== 1 ? 's' : ''} ago`;
+}
+
+const SAMPLE_FLOWERS = [
   {
     id: 1,
     emoji: '🌸',
@@ -52,6 +64,18 @@ const FLOWERS = [
 ];
 
 function Garden() {
+  const navigate = useNavigate();
+  const [userFlowers] = useState(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('bloomspaceFlowers') || '[]');
+      return stored.map(f => ({ ...f, plantedAt: formatAge(f.plantedAt) }));
+    } catch {
+      return [];
+    }
+  });
+
+  const allFlowers = [...userFlowers, ...SAMPLE_FLOWERS];
+
   return (
     <main
       className="flex-1"
@@ -74,7 +98,7 @@ function Garden() {
         {/* Stats row */}
         <div className="flex items-center justify-center gap-8 mb-10">
           <div className="text-center">
-            <p className="font-heading text-2xl text-moss">128</p>
+            <p className="font-heading text-2xl text-moss">{allFlowers.length}</p>
             <p className="text-sage-dark/50 text-xs mt-0.5">flowers planted</p>
           </div>
           <div className="w-px h-8" style={{ background: 'rgba(184, 212, 182, 0.5)' }} />
@@ -84,13 +108,14 @@ function Garden() {
           </div>
           <div className="w-px h-8" style={{ background: 'rgba(184, 212, 182, 0.5)' }} />
           <div className="text-center">
-            <p className="font-heading text-2xl text-moss">12</p>
+            <p className="font-heading text-2xl text-moss">{userFlowers.length || 12}</p>
             <p className="text-sage-dark/50 text-xs mt-0.5">bloomed today</p>
           </div>
         </div>
 
         {/* CTA */}
         <button
+          onClick={() => navigate('/create')}
           className="bg-sage text-cream px-8 py-3 rounded-full text-sm font-semibold hover:bg-sage-dark transition-all duration-300 cursor-pointer"
           style={{ boxShadow: '0 4px 18px rgba(122, 171, 120, 0.42)' }}
         >
@@ -101,7 +126,7 @@ function Garden() {
       {/* Flower grid */}
       <section className="px-6 pb-24">
         <div className="max-w-5xl mx-auto">
-          <GardenGrid flowers={FLOWERS} />
+          <GardenGrid flowers={allFlowers} />
         </div>
       </section>
 

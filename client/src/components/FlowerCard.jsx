@@ -1,4 +1,4 @@
-function FlowerCard({ emoji, bg, message, author, plantedAt }) {
+function FlowerCard({ emoji, bg, image, message, author, plantedAt }) {
   return (
     <div
       className="flex flex-col rounded-3xl overflow-hidden group transition-all duration-300 hover:-translate-y-1"
@@ -10,12 +10,16 @@ function FlowerCard({ emoji, bg, message, author, plantedAt }) {
     >
       {/* Illustration area */}
       <div
-        className="flex items-center justify-center py-8 text-5xl select-none"
-        style={{ background: bg }}
+        className="flex items-center justify-center h-36 overflow-hidden select-none"
+        style={{ background: image ? '#fffbf5' : bg }}
       >
-        <span className="group-hover:scale-110 transition-transform duration-300 inline-block">
-          {emoji}
-        </span>
+        {image ? (
+          <img src={image} alt="drawn flower" className="w-full h-full object-contain" />
+        ) : (
+          <span className="text-5xl group-hover:scale-110 transition-transform duration-300 inline-block">
+            {emoji}
+          </span>
+        )}
       </div>
 
       {/* Body */}

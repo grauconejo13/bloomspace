@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DrawingCanvas from '../components/DrawingCanvas';
 
 const PRESET_COLORS = [
@@ -11,10 +12,41 @@ const PRESET_COLORS = [
 ];
 
 function CreateFlower() {
+  const navigate = useNavigate();
   const canvasRef = useRef(null);
   const [color, setColor]           = useState('#2d4a2c');
   const [strokeSize, setStrokeSize] = useState(4);
   const [message, setMessage]       = useState('');
+  const [error, setError]           = useState('');
+
+  function handlePlant() {
+    const trimmed = message.trim();
+    if (trimmed.length < 5) {
+      setError('Please write at least 5 characters.');
+      return;
+    }
+    if (trimmed.length > 200) {
+      setError('Your message is too long (max 200 characters).');
+      return;
+    }
+
+    const flower = {
+      id:        Date.now(),
+      image:     canvasRef.current.getDataURL(),
+      message:   trimmed,
+      author:    'Anonymous Gardener',
+      plantedAt: new Date().toISOString(),
+    };
+
+    try {
+      const existing = JSON.parse(localStorage.getItem('bloomspaceFlowers') || '[]');
+      localStorage.setItem('bloomspaceFlowers', JSON.stringify([flower, ...existing]));
+    } catch {
+      localStorage.setItem('bloomspaceFlowers', JSON.stringify([flower]));
+    }
+
+    navigate('/garden');
+  }
 
   return (
     <main
@@ -154,7 +186,7 @@ function CreateFlower() {
           </label>
           <textarea
             value={message}
-            onChange={e => setMessage(e.target.value)}
+            onChange={e => { setMessage(e.target.value); setError(''); }}
             placeholder="Write a kind word, wish, or intention to attach to your flower…"
             rows={3}
             className="w-full text-sm text-moss placeholder-sage/50 leading-relaxed resize-none rounded-2xl px-4 py-3 outline-none transition-all duration-200"
@@ -165,11 +197,15 @@ function CreateFlower() {
             onFocus={e  => { e.target.style.borderColor = 'rgba(122, 171, 120, 0.60)'; e.target.style.boxShadow = '0 0 0 3px rgba(122,171,120,0.08)'; }}
             onBlur={e   => { e.target.style.borderColor = 'rgba(122, 171, 120, 0.22)'; e.target.style.boxShadow = 'none'; }}
           />
+          {error && (
+            <p className="text-xs mt-1.5 px-1" style={{ color: '#b84444' }}>{error}</p>
+          )}
         </div>
 
         {/* Plant CTA */}
         <div className="px-5 pb-6 pt-3 flex justify-end">
           <button
+            onClick={handlePlant}
             className="bg-sage text-cream px-8 py-3 rounded-full text-sm font-semibold hover:bg-sage-dark transition-all duration-300 cursor-pointer"
             style={{ boxShadow: '0 4px 18px rgba(122, 171, 120, 0.42)' }}
           >
