@@ -2,6 +2,8 @@ import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DrawingCanvas from '../components/DrawingCanvas';
 
+const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
+
 const PRESET_COLORS = [
   { label: 'Moss',     value: '#2d4a2c' },
   { label: 'Sage',     value: '#7aab78' },
@@ -30,12 +32,15 @@ function CreateFlower() {
       return;
     }
 
+    const now = Date.now();
     const flower = {
-      id:        Date.now(),
-      image:     canvasRef.current.getDataURL(),
-      message:   trimmed,
-      author:    'Anonymous Gardener',
-      plantedAt: new Date().toISOString(),
+      id:           now,
+      image:        canvasRef.current.getDataURL(),
+      message:      trimmed,
+      author:       'Anonymous Gardener',
+      plantedAt:    new Date(now).toISOString(),
+      expiresAt:    new Date(now + THREE_DAYS_MS).toISOString(),
+      wateredCount: 0,
     };
 
     try {

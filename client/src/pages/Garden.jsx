@@ -67,8 +67,11 @@ function Garden() {
   const navigate = useNavigate();
   const [userFlowers] = useState(() => {
     try {
+      const now = Date.now();
       const stored = JSON.parse(localStorage.getItem('bloomspaceFlowers') || '[]');
-      return stored.map(f => ({ ...f, plantedAt: formatAge(f.plantedAt) }));
+      return stored
+        .filter(f => !f.expiresAt || new Date(f.expiresAt).getTime() > now)
+        .map(f => ({ ...f, plantedAt: formatAge(f.plantedAt) }));
     } catch {
       return [];
     }
