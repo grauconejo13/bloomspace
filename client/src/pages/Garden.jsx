@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GardenGrid from '../components/GardenGrid';
+import FlowerModal from '../components/FlowerModal';
 
 function formatAge(isoString) {
   const mins = Math.round((Date.now() - new Date(isoString).getTime()) / 60000);
@@ -65,6 +66,7 @@ const SAMPLE_FLOWERS = [
 
 function Garden() {
   const navigate = useNavigate();
+  const [selectedFlower, setSelectedFlower] = useState(null);
   const [userFlowers] = useState(() => {
     try {
       const now = Date.now();
@@ -129,10 +131,13 @@ function Garden() {
       {/* Flower grid */}
       <section className="px-6 pb-24">
         <div className="max-w-5xl mx-auto">
-          <GardenGrid flowers={allFlowers} />
+          <GardenGrid flowers={allFlowers} onSelect={setSelectedFlower} />
         </div>
       </section>
 
+      {selectedFlower && (
+        <FlowerModal flower={selectedFlower} onClose={() => setSelectedFlower(null)} />
+      )}
     </main>
   );
 }
