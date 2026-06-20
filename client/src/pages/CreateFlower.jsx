@@ -22,6 +22,10 @@ function CreateFlower() {
   const [error, setError]           = useState('');
 
   function handlePlant() {
+    if (!canvasRef.current.hasDrawing()) {
+      setError('Please draw a flower before planting it.');
+      return;
+    }
     const trimmed = message.trim();
     if (trimmed.length < 5) {
       setError('Please write at least 5 characters.');
@@ -31,6 +35,8 @@ function CreateFlower() {
       setError('Your message is too long (max 200 characters).');
       return;
     }
+
+    if (!window.confirm('Ready to plant this flower in the garden?')) return;
 
     const now = Date.now();
     const flower = {
@@ -169,7 +175,7 @@ function CreateFlower() {
           </button>
 
           <button
-            onClick={() => canvasRef.current?.save()}
+            onClick={() => { if (canvasRef.current?.save() === false) setError('Please draw something before saving.'); }}
             className="text-xs font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
             style={{ color: 'rgba(74,112,72,0.75)' }}
             onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,212,182,0.22)'}

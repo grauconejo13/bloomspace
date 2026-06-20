@@ -4,6 +4,7 @@ const DrawingCanvas = forwardRef(function DrawingCanvas({ color, strokeSize }, r
   const canvasRef = useRef(null);
   const drawing = useRef(false);
   const lastPos = useRef({ x: 0, y: 0 });
+  const hasDrawingRef = useRef(false);
 
   useEffect(() => {
     const ctx = canvasRef.current.getContext('2d');
@@ -21,13 +22,19 @@ const DrawingCanvas = forwardRef(function DrawingCanvas({ color, strokeSize }, r
     clear() {
       const canvas = canvasRef.current;
       canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+      hasDrawingRef.current = false;
+    },
+    hasDrawing() {
+      return hasDrawingRef.current;
     },
     save() {
+      if (!hasDrawingRef.current) return false;
       const canvas = canvasRef.current;
       const link = document.createElement('a');
       link.href = canvas.toDataURL();
       link.download = 'my-bloom.png';
       link.click();
+      return true;
     },
     getDataURL() {
       return canvasRef.current.toDataURL();
@@ -60,11 +67,36 @@ const DrawingCanvas = forwardRef(function DrawingCanvas({ color, strokeSize }, r
     ctx.lineTo(pos.x, pos.y);
     ctx.stroke();
     lastPos.current = pos;
+    hasDrawingRef.current = true;
   }
 
   function stopDrawing() {
     drawing.current = false;
   }
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+
+    function onTouchStart(e) {
+      e.preventDefault();
+      startDrawing(e);
+    }
+
+    function onTouchMove(e) {
+      e.preventDefault();
+      draw(e);
+    }
+
+    canvas.addEventListener('touchstart', onTouchStart, { passive: false });
+    canvas.addEventListener('touchmove',  onTouchMove,  { passive: false });
+    canvas.addEventListener('touchend',   stopDrawing);
+
+    return () => {
+      canvas.removeEventListener('touchstart', onTouchStart);
+      canvas.removeEventListener('touchmove',  onTouchMove);
+      canvas.removeEventListener('touchend',   stopDrawing);
+    };
+  }, []);
 
   return (
     <canvas
