@@ -19,19 +19,37 @@ While the original hackathon prototype was never fully integrated or deployed, t
 ## Tech Stack
 
 Frontend
+
 - React
 - Vite
 
 Backend
+
 - Node.js
 - Express
 
 Database
+
 - MongoDB Atlas
 
 ## Project Status
 
 🚧 In Development
+
+## Latest Progress
+
+- Frontend deployed to Vercel with root directory set to `client`.
+- Mobile navbar added with hamburger menu.
+- Mobile drawing canvas height improved.
+- Hero simplified by removing `hero.png`.
+- Basic Express flower API routes created and tested:
+  - GET /api/flowers
+  - POST /api/flowers
+  - PATCH /api/flowers/:id/water
+
+## Next Step
+
+Connect frontend flower flow to the Express API before adding Supabase.
 
 ## Original Hackathon Team
 
@@ -43,4 +61,3 @@ Database
 ## Revival
 
 This version is an independent continuation of the original hackathon project.
-

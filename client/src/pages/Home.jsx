@@ -1,4 +1,5 @@
 import wallpaper from "../assets/wallpaper-bloom.png";
+import { Link } from "react-router-dom";
 
 const steps = [
   {
@@ -159,23 +160,26 @@ function Home() {
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-4 justify-center">
-          <button
-            className="bg-sage text-cream px-8 py-3 rounded-full text-sm font-semibold hover:bg-sage-dark transition-all duration-300 cursor-pointer"
-            style={{ boxShadow: "0 4px 18px rgba(122, 171, 120, 0.42)" }}
-          >
-            Plant a Flower
-          </button>
-          <button
-            className="border border-sage-light/60 text-sage-dark px-8 py-3 rounded-full text-sm font-semibold hover:bg-sage-light/15 transition-all duration-300 cursor-pointer"
-            style={{
-              background: "rgba(255, 251, 245, 0.82)",
-              backdropFilter: "blur(4px)",
-            }}
-          >
-            Browse the Garden
-          </button>
-        </div>
+   <div className="flex flex-wrap gap-4 justify-center">
+  <Link
+    to="/create"
+    className="bg-sage text-cream px-8 py-3 rounded-full text-sm font-semibold hover:bg-sage-dark transition-all duration-300 cursor-pointer"
+    style={{ boxShadow: "0 4px 18px rgba(122, 171, 120, 0.42)" }}
+  >
+    Plant a Flower
+  </Link>
+
+  <Link
+    to="/garden"
+    className="border border-sage-light/60 text-sage-dark px-8 py-3 rounded-full text-sm font-semibold hover:bg-sage-light/15 transition-all duration-300 cursor-pointer"
+    style={{
+      background: "rgba(255, 251, 245, 0.82)",
+      backdropFilter: "blur(4px)",
+    }}
+  >
+    Browse the Garden
+  </Link>
+</div>
       </section>
 
       {/* Garden snapshot strip */}
