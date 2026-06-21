@@ -103,7 +103,7 @@ const DrawingCanvas = forwardRef(function DrawingCanvas({ color, strokeSize }, r
       ref={canvasRef}
       width={800}
       height={440}
-      className="w-full rounded-2xl cursor-crosshair block"
+      className="w-full h-72 md:h-auto rounded-2xl cursor-crosshair block"
       style={{
         background: '#fffbf5',
         border: '1.5px dashed rgba(122, 171, 120, 0.38)',
