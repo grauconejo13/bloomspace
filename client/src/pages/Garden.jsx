@@ -67,7 +67,7 @@ const SAMPLE_FLOWERS = [
 function Garden() {
   const navigate = useNavigate();
   const [selectedFlower, setSelectedFlower] = useState(null);
-  const [userFlowers] = useState(() => {
+  const [userFlowers, setUserFlowers] = useState(() => {
     try {
       const now = Date.now();
       const stored = JSON.parse(localStorage.getItem('bloomspaceFlowers') || '[]');
@@ -78,6 +78,16 @@ function Garden() {
       return [];
     }
   });
+
+  function handleFlowerUpdated(updatedFlower) {
+    setUserFlowers(prev =>
+      prev.map(f =>
+        f.id === updatedFlower.id
+          ? { ...f, expiresAt: updatedFlower.expiresAt, wateredCount: updatedFlower.wateredCount }
+          : f
+      )
+    );
+  }
 
   const allFlowers = [...userFlowers, ...SAMPLE_FLOWERS];
 
@@ -136,7 +146,11 @@ function Garden() {
       </section>
 
       {selectedFlower && (
-        <FlowerModal flower={selectedFlower} onClose={() => setSelectedFlower(null)} />
+        <FlowerModal
+          flower={selectedFlower}
+          onClose={() => setSelectedFlower(null)}
+          onFlowerUpdated={handleFlowerUpdated}
+        />
       )}
     </main>
   );

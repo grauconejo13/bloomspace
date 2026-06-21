@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DrawingCanvas from '../components/DrawingCanvas';
+import PlantConfirmModal from '../components/PlantConfirmModal';
 
 const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 
@@ -20,6 +21,7 @@ function CreateFlower() {
   const [strokeSize, setStrokeSize] = useState(4);
   const [message, setMessage]       = useState('');
   const [error, setError]           = useState('');
+  const [showConfirm, setShowConfirm] = useState(false);
 
   function handlePlant() {
     if (!canvasRef.current.hasDrawing()) {
@@ -36,13 +38,15 @@ function CreateFlower() {
       return;
     }
 
-    if (!window.confirm('Ready to plant this flower in the garden?')) return;
+    setShowConfirm(true);
+  }
 
+  function handleConfirmPlant() {
     const now = Date.now();
     const flower = {
       id:           now,
       image:        canvasRef.current.getDataURL(),
-      message:      trimmed,
+      message:      message.trim(),
       author:       'Anonymous Gardener',
       plantedAt:    new Date(now).toISOString(),
       expiresAt:    new Date(now + THREE_DAYS_MS).toISOString(),
@@ -56,6 +60,7 @@ function CreateFlower() {
       localStorage.setItem('bloomspaceFlowers', JSON.stringify([flower]));
     }
 
+    setShowConfirm(false);
     navigate('/garden');
   }
 
@@ -225,6 +230,13 @@ function CreateFlower() {
         </div>
 
       </div>
+
+      {showConfirm && (
+        <PlantConfirmModal
+          onCancel={() => setShowConfirm(false)}
+          onConfirm={handleConfirmPlant}
+        />
+      )}
     </main>
   );
 }

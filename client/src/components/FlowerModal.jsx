@@ -11,7 +11,7 @@ function formatTimeLeft(msLeft) {
   return { label: `Blooming for ${days} day${days !== 1 ? 's' : ''}`, urgent: false };
 }
 
-function FlowerModal({ flower, onClose }) {
+function FlowerModal({ flower, onClose, onFlowerUpdated }) {
   const { id, emoji, bg, image, message, author, plantedAt, expiresAt, wateredCount: initCount } = flower;
   const hasExpiry = expiresAt != null;
 
@@ -51,8 +51,11 @@ function FlowerModal({ flower, onClose }) {
 
   function handleWater() {
     const next = Date.now() + THREE_DAYS_MS;
+    const nextExpiresAt = new Date(next).toISOString();
+    const nextWateredCount = (wateredCount || 0) + 1;
+
     setTimeLeft(formatTimeLeft(THREE_DAYS_MS));
-    setWateredCount(c => c + 1);
+    setWateredCount(nextWateredCount);
     setJustWatered(true);
     clearTimeout(feedbackTimer.current);
     feedbackTimer.current = setTimeout(() => setJustWatered(false), 3000);
@@ -63,12 +66,14 @@ function FlowerModal({ flower, onClose }) {
         JSON.stringify(
           stored.map(f =>
             f.id === id
-              ? { ...f, expiresAt: new Date(next).toISOString(), wateredCount: (f.wateredCount || 0) + 1 }
+              ? { ...f, expiresAt: nextExpiresAt, wateredCount: nextWateredCount }
               : f
           )
         )
       );
     } catch { /* silent */ }
+
+    onFlowerUpdated?.({ id, expiresAt: nextExpiresAt, wateredCount: nextWateredCount });
   }
 
   return (
