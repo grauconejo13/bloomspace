@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -c models/Flower.js)",
+      "Bash(node -c middleware/validation.js)",
+      "Bash(node -c controllers/flowerController.js)",
+      "Bash(node -c routes/flowerRoutes.js)",
+      "Bash(node -c server.js)"
+    ]
+  }
+}
