@@ -1,4 +1,3 @@
-import hero from "../assets/hero.png";
 import wallpaper from "../assets/wallpaper-bloom.png";
 
 const steps = [
@@ -134,59 +133,48 @@ function Home() {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col items-center">
-          <img
-            src={hero}
-            alt="Bloomspace flower illustration"
-            className="w-36 mb-6"
-            style={{
-              filter:
-                "drop-shadow(0 8px 32px rgba(196, 181, 212, 0.55)) drop-shadow(0 2px 8px rgba(122, 171, 120, 0.2))",
-            }}
-          />
 
-          {/* Frosted cream text panel */}
-          <div
-            className="rounded-3xl px-8 py-7 mb-8 flex flex-col items-center gap-3 w-full max-w-lg"
+        {/* Frosted cream text panel */}
+        <div
+          className="rounded-3xl px-8 py-7 mb-8 flex flex-col items-center gap-3 w-full max-w-lg"
+          style={{
+            background: "rgba(250, 246, 239, 0.58)",
+            backdropFilter: "blur(3px)",
+            WebkitBackdropFilter: "blur(3px)",
+            border: "1px solid rgba(250, 246, 239, 0.38)",
+            boxShadow: "0 4px 40px rgba(45, 74, 44, 0.06)",
+          }}
+        >
+          <h1 className="font-heading text-5xl md:text-6xl leading-tight text-moss max-w-xl">
+            Grow Something
+            <br />
+            Beautiful
+          </h1>
+          <p className="text-sage-dark text-lg max-w-md leading-relaxed">
+            A community wellness garden built from small acts of kindness.
+          </p>
+          <p className="text-sage-dark/80 text-sm max-w-sm leading-relaxed">
+            Draw a flower, write a positive message, and plant it for the world
+            to see.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-4 justify-center">
+          <button
+            className="bg-sage text-cream px-8 py-3 rounded-full text-sm font-semibold hover:bg-sage-dark transition-all duration-300 cursor-pointer"
+            style={{ boxShadow: "0 4px 18px rgba(122, 171, 120, 0.42)" }}
+          >
+            Plant a Flower
+          </button>
+          <button
+            className="border border-sage-light/60 text-sage-dark px-8 py-3 rounded-full text-sm font-semibold hover:bg-sage-light/15 transition-all duration-300 cursor-pointer"
             style={{
-              background: "rgba(250, 246, 239, 0.58)",
-              backdropFilter: "blur(3px)",
-              WebkitBackdropFilter: "blur(3px)",
-              border: "1px solid rgba(250, 246, 239, 0.38)",
-              boxShadow: "0 4px 40px rgba(45, 74, 44, 0.06)",
+              background: "rgba(255, 251, 245, 0.82)",
+              backdropFilter: "blur(4px)",
             }}
           >
-            <h1 className="font-heading text-5xl md:text-6xl leading-tight text-moss max-w-xl">
-              Grow Something
-              <br />
-              Beautiful
-            </h1>
-            <p className="text-sage-dark text-lg max-w-md leading-relaxed">
-              A community wellness garden built from small acts of kindness.
-            </p>
-            <p className="text-sage-dark/80 text-sm max-w-sm leading-relaxed">
-              Draw a flower, write a positive message, and plant it for the
-              world to see.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-4 justify-center">
-            <button
-              className="bg-sage text-cream px-8 py-3 rounded-full text-sm font-semibold hover:bg-sage-dark transition-all duration-300 cursor-pointer"
-              style={{ boxShadow: "0 4px 18px rgba(122, 171, 120, 0.42)" }}
-            >
-              Plant a Flower
-            </button>
-            <button
-              className="border border-sage-light/60 text-sage-dark px-8 py-3 rounded-full text-sm font-semibold hover:bg-sage-light/15 transition-all duration-300 cursor-pointer"
-              style={{
-                background: "rgba(255, 251, 245, 0.82)",
-                backdropFilter: "blur(4px)",
-              }}
-            >
-              Browse the Garden
-            </button>
-          </div>
+            Browse the Garden
+          </button>
         </div>
       </section>
 
