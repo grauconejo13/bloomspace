@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DrawingCanvas from '../components/DrawingCanvas';
 import PlantConfirmModal from '../components/PlantConfirmModal';
+import { plantFlower } from '../services/flowerService';
 
 const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 
@@ -20,6 +21,8 @@ function CreateFlower() {
   const [color, setColor]           = useState('#2d4a2c');
   const [strokeSize, setStrokeSize] = useState(4);
   const [message, setMessage]       = useState('');
+  const [gardenerName, setGardenerName] = useState('');
+  const [location, setLocation]     = useState('');
   const [error, setError]           = useState('');
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -41,23 +44,33 @@ function CreateFlower() {
     setShowConfirm(true);
   }
 
-  function handleConfirmPlant() {
-    const now = Date.now();
-    const flower = {
-      id:           now,
-      image:        canvasRef.current.getDataURL(),
-      message:      message.trim(),
-      author:       'Anonymous Gardener',
-      plantedAt:    new Date(now).toISOString(),
-      expiresAt:    new Date(now + THREE_DAYS_MS).toISOString(),
-      wateredCount: 0,
-    };
+  async function handleConfirmPlant() {
+    const image = canvasRef.current.getDataURL();
+    const trimmedMessage = message.trim();
+    const trimmedAuthor = gardenerName.trim() || 'Anonymous Gardener';
+    const trimmedLocation = location.trim();
 
     try {
-      const existing = JSON.parse(localStorage.getItem('bloomspaceFlowers') || '[]');
-      localStorage.setItem('bloomspaceFlowers', JSON.stringify([flower, ...existing]));
+      await plantFlower({ image, message: trimmedMessage, author: trimmedAuthor, location: trimmedLocation });
     } catch {
-      localStorage.setItem('bloomspaceFlowers', JSON.stringify([flower]));
+      const now = Date.now();
+      const flower = {
+        id:           now,
+        image,
+        message:      trimmedMessage,
+        author:       trimmedAuthor,
+        location:     trimmedLocation,
+        plantedAt:    new Date(now).toISOString(),
+        expiresAt:    new Date(now + THREE_DAYS_MS).toISOString(),
+        wateredCount: 0,
+      };
+
+      try {
+        const existing = JSON.parse(localStorage.getItem('bloomspaceFlowers') || '[]');
+        localStorage.setItem('bloomspaceFlowers', JSON.stringify([flower, ...existing]));
+      } catch {
+        localStorage.setItem('bloomspaceFlowers', JSON.stringify([flower]));
+      }
     }
 
     setShowConfirm(false);
@@ -216,6 +229,48 @@ function CreateFlower() {
           {error && (
             <p className="text-xs mt-1.5 px-1" style={{ color: '#b84444' }}>{error}</p>
           )}
+        </div>
+
+        {/* Gardener details */}
+        <div className="px-5 pt-2 pb-2 flex flex-col sm:flex-row gap-4">
+          <div className="flex-1">
+            <label className="block text-[10px] font-bold tracking-widest uppercase text-sage-dark/50 mb-2">
+              Your Name (optional)
+            </label>
+            <input
+              type="text"
+              value={gardenerName}
+              onChange={e => setGardenerName(e.target.value)}
+              placeholder="Anonymous Gardener"
+              maxLength={60}
+              className="w-full text-sm text-moss placeholder-sage/50 rounded-2xl px-4 py-2.5 outline-none transition-all duration-200"
+              style={{
+                background: 'rgba(250, 246, 239, 0.80)',
+                border: '1px solid rgba(122, 171, 120, 0.22)',
+              }}
+              onFocus={e => { e.target.style.borderColor = 'rgba(122, 171, 120, 0.60)'; e.target.style.boxShadow = '0 0 0 3px rgba(122,171,120,0.08)'; }}
+              onBlur={e  => { e.target.style.borderColor = 'rgba(122, 171, 120, 0.22)'; e.target.style.boxShadow = 'none'; }}
+            />
+          </div>
+          <div className="flex-1">
+            <label className="block text-[10px] font-bold tracking-widest uppercase text-sage-dark/50 mb-2">
+              Location (optional)
+            </label>
+            <input
+              type="text"
+              value={location}
+              onChange={e => setLocation(e.target.value)}
+              placeholder="Somewhere in the world"
+              maxLength={60}
+              className="w-full text-sm text-moss placeholder-sage/50 rounded-2xl px-4 py-2.5 outline-none transition-all duration-200"
+              style={{
+                background: 'rgba(250, 246, 239, 0.80)',
+                border: '1px solid rgba(122, 171, 120, 0.22)',
+              }}
+              onFocus={e => { e.target.style.borderColor = 'rgba(122, 171, 120, 0.60)'; e.target.style.boxShadow = '0 0 0 3px rgba(122,171,120,0.08)'; }}
+              onBlur={e  => { e.target.style.borderColor = 'rgba(122, 171, 120, 0.22)'; e.target.style.boxShadow = 'none'; }}
+            />
+          </div>
         </div>
 
         {/* Plant CTA */}

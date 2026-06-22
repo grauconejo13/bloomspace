@@ -11,13 +11,14 @@ function findFlowerById(id) {
     return flowers.find((flower) => flower.id === id);
 }
 
-function createFlower({ image, message, author }) {
+function createFlower({ image, message, author, location }) {
     const now = Date.now();
     const flower = {
         id: now.toString(),
         image,
         message,
         author: author || "Anonymous Gardener",
+        location: location || "",
         plantedAt: new Date(now).toISOString(),
         expiresAt: new Date(now + THREE_DAYS_MS).toISOString(),
         wateredCount: 0,

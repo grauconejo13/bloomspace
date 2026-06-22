@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GardenGrid from '../components/GardenGrid';
 import FlowerModal from '../components/FlowerModal';
+import { fetchFlowers } from '../services/flowerService';
 
 function formatAge(isoString) {
   const mins = Math.round((Date.now() - new Date(isoString).getTime()) / 60000);
@@ -67,17 +68,35 @@ const SAMPLE_FLOWERS = [
 function Garden() {
   const navigate = useNavigate();
   const [selectedFlower, setSelectedFlower] = useState(null);
-  const [userFlowers, setUserFlowers] = useState(() => {
-    try {
-      const now = Date.now();
-      const stored = JSON.parse(localStorage.getItem('bloomspaceFlowers') || '[]');
-      return stored
-        .filter(f => !f.expiresAt || new Date(f.expiresAt).getTime() > now)
-        .map(f => ({ ...f, plantedAt: formatAge(f.plantedAt) }));
-    } catch {
-      return [];
+  const [userFlowers, setUserFlowers] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    function loadFromLocalStorage() {
+      try {
+        const now = Date.now();
+        const stored = JSON.parse(localStorage.getItem('bloomspaceFlowers') || '[]');
+        return stored
+          .filter(f => !f.expiresAt || new Date(f.expiresAt).getTime() > now)
+          .map(f => ({ ...f, plantedAt: formatAge(f.plantedAt) }));
+      } catch {
+        return [];
+      }
     }
-  });
+
+    fetchFlowers()
+      .then(flowers => {
+        if (!cancelled) {
+          setUserFlowers(flowers.map(f => ({ ...f, plantedAt: formatAge(f.plantedAt) })));
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setUserFlowers(loadFromLocalStorage());
+      });
+
+    return () => { cancelled = true; };
+  }, []);
 
   function handleFlowerUpdated(updatedFlower) {
     setUserFlowers(prev =>

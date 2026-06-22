@@ -9,8 +9,8 @@ function getFlowers(req, res) {
 }
 
 function postFlower(req, res) {
-    const { image, message, author } = req.body;
-    const flower = createFlower({ image, message, author });
+    const { image, message, author, location } = req.body;
+    const flower = createFlower({ image, message, author, location });
     res.status(201).json(flower);
 }
 

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { waterFlowerById } from '../services/flowerService';
 
 const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 
@@ -12,28 +13,14 @@ function formatTimeLeft(msLeft) {
 }
 
 function FlowerModal({ flower, onClose, onFlowerUpdated }) {
-  const { id, emoji, bg, image, message, author, plantedAt, expiresAt, wateredCount: initCount } = flower;
+  const { id, emoji, bg, image, message, author, location, plantedAt, expiresAt, wateredCount: initCount } = flower;
   const hasExpiry = expiresAt != null;
 
-  const [timeLeft, setTimeLeft] = useState(() => {
-    if (!hasExpiry) return null;
-    try {
-      const stored = JSON.parse(localStorage.getItem('bloomspaceFlowers') || '[]');
-      const fresh = stored.find(f => f.id === id);
-      if (fresh?.expiresAt) return formatTimeLeft(new Date(fresh.expiresAt).getTime() - Date.now());
-    } catch { /* silent */ }
-    return formatTimeLeft(new Date(expiresAt).getTime() - Date.now());
-  });
+  const [timeLeft, setTimeLeft] = useState(() =>
+    hasExpiry ? formatTimeLeft(new Date(expiresAt).getTime() - Date.now()) : null
+  );
 
-  const [wateredCount, setWateredCount] = useState(() => {
-    if (!hasExpiry) return null;
-    try {
-      const stored = JSON.parse(localStorage.getItem('bloomspaceFlowers') || '[]');
-      const fresh = stored.find(f => f.id === id);
-      if (fresh) return fresh.wateredCount ?? 0;
-    } catch { /* silent */ }
-    return initCount ?? 0;
-  });
+  const [wateredCount, setWateredCount] = useState(initCount ?? 0);
 
   const [justWatered, setJustWatered] = useState(false);
   const feedbackTimer = useRef(null);
@@ -49,31 +36,39 @@ function FlowerModal({ flower, onClose, onFlowerUpdated }) {
     return () => document.removeEventListener('keydown', onKey);
   }, [onClose]);
 
-  function handleWater() {
-    const next = Date.now() + THREE_DAYS_MS;
-    const nextExpiresAt = new Date(next).toISOString();
-    const nextWateredCount = (wateredCount || 0) + 1;
-
-    setTimeLeft(formatTimeLeft(THREE_DAYS_MS));
-    setWateredCount(nextWateredCount);
+  async function handleWater() {
     setJustWatered(true);
     clearTimeout(feedbackTimer.current);
     feedbackTimer.current = setTimeout(() => setJustWatered(false), 3000);
-    try {
-      const stored = JSON.parse(localStorage.getItem('bloomspaceFlowers') || '[]');
-      localStorage.setItem(
-        'bloomspaceFlowers',
-        JSON.stringify(
-          stored.map(f =>
-            f.id === id
-              ? { ...f, expiresAt: nextExpiresAt, wateredCount: nextWateredCount }
-              : f
-          )
-        )
-      );
-    } catch { /* silent */ }
 
-    onFlowerUpdated?.({ id, expiresAt: nextExpiresAt, wateredCount: nextWateredCount });
+    try {
+      const updated = await waterFlowerById(id);
+      setTimeLeft(formatTimeLeft(new Date(updated.expiresAt).getTime() - Date.now()));
+      setWateredCount(updated.wateredCount);
+      onFlowerUpdated?.({ id, expiresAt: updated.expiresAt, wateredCount: updated.wateredCount });
+    } catch {
+      const nextExpiresAt = new Date(Date.now() + THREE_DAYS_MS).toISOString();
+      const nextWateredCount = (wateredCount || 0) + 1;
+
+      setTimeLeft(formatTimeLeft(THREE_DAYS_MS));
+      setWateredCount(nextWateredCount);
+
+      try {
+        const stored = JSON.parse(localStorage.getItem('bloomspaceFlowers') || '[]');
+        localStorage.setItem(
+          'bloomspaceFlowers',
+          JSON.stringify(
+            stored.map(f =>
+              f.id === id
+                ? { ...f, expiresAt: nextExpiresAt, wateredCount: nextWateredCount }
+                : f
+            )
+          )
+        );
+      } catch { /* silent */ }
+
+      onFlowerUpdated?.({ id, expiresAt: nextExpiresAt, wateredCount: nextWateredCount });
+    }
   }
 
   return (
@@ -159,7 +154,7 @@ function FlowerModal({ flower, onClose, onFlowerUpdated }) {
             className="flex items-center justify-between text-xs border-t pt-3"
             style={{ borderColor: 'rgba(184,212,182,0.28)', color: 'rgba(74,112,72,0.55)' }}
           >
-            <span>— {author}</span>
+            <span>— {author}{location ? `, ${location}` : ''}</span>
             <span>{plantedAt}</span>
           </div>
 
