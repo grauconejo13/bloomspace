@@ -179,8 +179,28 @@ function CreateFlower() {
             />
           </div>
 
-          {/* Push clear/save to the right */}
+          {/* Push undo/redo/clear/save to the right */}
           <div className="flex-1" />
+
+          <button
+            onClick={() => canvasRef.current?.undo()}
+            className="text-xs font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
+            style={{ color: 'rgba(74,112,72,0.75)' }}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,212,182,0.22)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+          >
+            Undo
+          </button>
+
+          <button
+            onClick={() => canvasRef.current?.redo()}
+            className="text-xs font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
+            style={{ color: 'rgba(74,112,72,0.75)' }}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,212,182,0.22)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+          >
+            Redo
+          </button>
 
           <button
             onClick={() => canvasRef.current?.clear()}

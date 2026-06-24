@@ -4,7 +4,9 @@ const DrawingCanvas = forwardRef(function DrawingCanvas({ color, strokeSize }, r
   const canvasRef = useRef(null);
   const drawing = useRef(false);
   const lastPos = useRef({ x: 0, y: 0 });
-  const hasDrawingRef = useRef(false);
+  const activeStroke = useRef(null);
+  const strokesRef = useRef([]);
+  const redoStackRef = useRef([]);
 
   useEffect(() => {
     const ctx = canvasRef.current.getContext('2d');
@@ -18,17 +20,50 @@ const DrawingCanvas = forwardRef(function DrawingCanvas({ color, strokeSize }, r
     ctx.lineWidth = strokeSize;
   }, [color, strokeSize]);
 
+  function redrawAll() {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    strokesRef.current.forEach(stroke => {
+      ctx.strokeStyle = stroke.color;
+      ctx.lineWidth = stroke.size;
+      for (let i = 1; i < stroke.points.length; i++) {
+        ctx.beginPath();
+        ctx.moveTo(stroke.points[i - 1].x, stroke.points[i - 1].y);
+        ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+        ctx.stroke();
+      }
+    });
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = strokeSize;
+  }
+
   useImperativeHandle(ref, () => ({
     clear() {
       const canvas = canvasRef.current;
       canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-      hasDrawingRef.current = false;
+      strokesRef.current = [];
+      redoStackRef.current = [];
+    },
+    undo() {
+      if (strokesRef.current.length === 0) return;
+      const last = strokesRef.current.pop();
+      redoStackRef.current.push(last);
+      redrawAll();
+    },
+    redo() {
+      if (redoStackRef.current.length === 0) return;
+      const stroke = redoStackRef.current.pop();
+      strokesRef.current.push(stroke);
+      redrawAll();
     },
     hasDrawing() {
-      return hasDrawingRef.current;
+      return strokesRef.current.length > 0;
     },
     save() {
-      if (!hasDrawingRef.current) return false;
+      if (strokesRef.current.length === 0) return false;
       const canvas = canvasRef.current;
       const link = document.createElement('a');
       link.href = canvas.toDataURL();
@@ -55,7 +90,9 @@ const DrawingCanvas = forwardRef(function DrawingCanvas({ color, strokeSize }, r
 
   function startDrawing(e) {
     drawing.current = true;
-    lastPos.current = getPos(e);
+    const pos = getPos(e);
+    lastPos.current = pos;
+    activeStroke.current = { color, size: strokeSize, points: [pos] };
   }
 
   function draw(e) {
@@ -67,10 +104,15 @@ const DrawingCanvas = forwardRef(function DrawingCanvas({ color, strokeSize }, r
     ctx.lineTo(pos.x, pos.y);
     ctx.stroke();
     lastPos.current = pos;
-    hasDrawingRef.current = true;
+    activeStroke.current.points.push(pos);
   }
 
   function stopDrawing() {
+    if (drawing.current && activeStroke.current?.points.length > 1) {
+      strokesRef.current.push(activeStroke.current);
+      redoStackRef.current = [];
+    }
+    activeStroke.current = null;
     drawing.current = false;
   }
 
@@ -96,7 +138,8 @@ const DrawingCanvas = forwardRef(function DrawingCanvas({ color, strokeSize }, r
       canvas.removeEventListener('touchmove',  onTouchMove);
       canvas.removeEventListener('touchend',   stopDrawing);
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- startDrawing/draw only close over color and strokeSize, both listed
+  }, [color, strokeSize]);
 
   return (
     <canvas
