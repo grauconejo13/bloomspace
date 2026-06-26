@@ -2,7 +2,9 @@ import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DrawingCanvas from '../components/DrawingCanvas';
 import PlantConfirmModal from '../components/PlantConfirmModal';
+import ShareBloomButton from '../components/ShareBloomButton';
 import { plantFlower } from '../services/flowerService';
+import { getPlantCount, incrementPlantCount, hasReachedPlantLimit } from '../utils/sessionPlantLimit';
 
 const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 
@@ -25,8 +27,12 @@ function CreateFlower() {
   const [location, setLocation]     = useState('');
   const [error, setError]           = useState('');
   const [showConfirm, setShowConfirm] = useState(false);
+  const [plantedFlower, setPlantedFlower] = useState(null);
+  const [plantCount, setPlantCount] = useState(() => getPlantCount());
+  const limitReached = hasReachedPlantLimit(plantCount);
 
   function handlePlant() {
+    if (limitReached) return;
     if (!canvasRef.current.hasDrawing()) {
       setError('Please draw a flower before planting it.');
       return;
@@ -74,7 +80,8 @@ function CreateFlower() {
     }
 
     setShowConfirm(false);
-    navigate('/garden');
+    setPlantedFlower({ image, message: trimmedMessage, author: trimmedAuthor, location: trimmedLocation });
+    setPlantCount(incrementPlantCount());
   }
 
   return (
@@ -82,6 +89,52 @@ function CreateFlower() {
       className="flex-1 py-16 px-6"
       style={{ background: 'linear-gradient(to bottom, #faf6ef, #f2e9d8)' }}
     >
+      {plantedFlower ? (
+        <div className="max-w-md mx-auto text-center">
+          <h1 className="font-heading text-4xl md:text-5xl text-moss mb-3">
+            Your Flower Has Bloomed! 🌼
+          </h1>
+          <p className="text-sage-dark/70 text-sm max-w-sm mx-auto leading-relaxed mb-8">
+            It&rsquo;s growing in the shared garden now. Share your bloom card with the world, or go see it live.
+          </p>
+
+          <div
+            className="rounded-3xl overflow-hidden mb-6"
+            style={{
+              background: '#fffbf5',
+              border: '1px solid rgba(184, 212, 182, 0.35)',
+              boxShadow: '0 12px 48px rgba(45, 74, 44, 0.10), 0 2px 8px rgba(45, 74, 44, 0.05)',
+              aspectRatio: '16 / 9',
+            }}
+          >
+            <img src={plantedFlower.image} alt="Your planted bloom" className="w-full h-full object-contain" />
+          </div>
+
+          {plantedFlower.message && (
+            <p className="text-moss/85 text-sm italic leading-relaxed mb-8">&ldquo;{plantedFlower.message}&rdquo;</p>
+          )}
+
+          <div className="flex flex-col items-center gap-4">
+            <ShareBloomButton
+              image={plantedFlower.image}
+              message={plantedFlower.message}
+              author={plantedFlower.author}
+              location={plantedFlower.location}
+            />
+
+            <button
+              onClick={() => navigate('/garden')}
+              className="text-xs font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
+              style={{ color: 'rgba(74,112,72,0.75)' }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,212,182,0.22)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+            >
+              View My Garden →
+            </button>
+          </div>
+        </div>
+      ) : (
+      <>
       {/* Page header */}
       <div className="text-center mb-10">
         <h1 className="font-heading text-4xl md:text-5xl text-moss mb-3">
@@ -294,10 +347,16 @@ function CreateFlower() {
         </div>
 
         {/* Plant CTA */}
-        <div className="px-5 pb-6 pt-3 flex justify-end">
+        <div className="px-5 pb-6 pt-3 flex flex-col items-end gap-2">
+          {limitReached && (
+            <p className="text-xs text-right max-w-xs" style={{ color: 'rgba(74,112,72,0.75)' }}>
+              You&rsquo;ve planted 3 blooms this session 🌸 Come back later or refresh your session.
+            </p>
+          )}
           <button
             onClick={handlePlant}
-            className="bg-sage text-cream px-8 py-3 rounded-full text-sm font-semibold hover:bg-sage-dark transition-all duration-300 cursor-pointer"
+            disabled={limitReached}
+            className="bg-sage text-cream px-8 py-3 rounded-full text-sm font-semibold hover:bg-sage-dark transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-sage"
             style={{ boxShadow: '0 4px 18px rgba(122, 171, 120, 0.42)' }}
           >
             🌼 Plant in the Garden
@@ -305,6 +364,8 @@ function CreateFlower() {
         </div>
 
       </div>
+      </>
+      )}
 
       {showConfirm && (
         <PlantConfirmModal
