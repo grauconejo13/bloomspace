@@ -15,57 +15,6 @@ function formatAge(isoString) {
   return `${days} day${days !== 1 ? 's' : ''} ago`;
 }
 
-const SAMPLE_FLOWERS = [
-  {
-    id: 1,
-    emoji: '🌸',
-    bg: 'rgba(242, 200, 176, 0.22)',
-    message: 'A bloom for every new beginning.',
-    author: 'a wanderer',
-    plantedAt: '2 hours ago',
-  },
-  {
-    id: 2,
-    emoji: '🌺',
-    bg: 'rgba(196, 181, 212, 0.22)',
-    message: 'Growth takes patience, just like flowers.',
-    author: 'a dreamer',
-    plantedAt: '5 hours ago',
-  },
-  {
-    id: 3,
-    emoji: '🌼',
-    bg: 'rgba(184, 216, 232, 0.22)',
-    message: 'Plant kindness and it will bloom everywhere.',
-    author: 'sun_seeker',
-    plantedAt: 'yesterday',
-  },
-  {
-    id: 4,
-    emoji: '🌷',
-    bg: 'rgba(184, 212, 182, 0.22)',
-    message: 'Every flower is a quiet act of hope.',
-    author: 'morning_tea',
-    plantedAt: 'yesterday',
-  },
-  {
-    id: 5,
-    emoji: '🌻',
-    bg: 'rgba(245, 230, 160, 0.22)',
-    message: 'You are allowed to grow at your own pace.',
-    author: 'gentle_garden',
-    plantedAt: '2 days ago',
-  },
-  {
-    id: 6,
-    emoji: '🌹',
-    bg: 'rgba(245, 191, 191, 0.22)',
-    message: 'Small moments of beauty matter.',
-    author: 'petal_path',
-    plantedAt: '3 days ago',
-  },
-];
-
 const WAKEUP_NOTICE_DELAY_MS = 5000;
 
 function Garden() {
@@ -74,6 +23,7 @@ function Garden() {
   const [userFlowers, setUserFlowers] = useState([]);
   const [showWakeupNotice, setShowWakeupNotice] = useState(false);
   const [loadError, setLoadError] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
   const [retryToken, setRetryToken] = useState(0);
 
   useEffect(() => {
@@ -112,7 +62,11 @@ function Garden() {
         }
       })
       .finally(() => {
-        if (!cancelled) setShowWakeupNotice(false);
+        clearTimeout(wakeupTimer);
+        if (!cancelled) {
+          setShowWakeupNotice(false);
+          setHasLoaded(true);
+        }
       });
 
     return () => { cancelled = true; clearTimeout(wakeupTimer); };
@@ -121,6 +75,7 @@ function Garden() {
   function handleRetry() {
     setLoadError(false);
     setShowWakeupNotice(false);
+    setHasLoaded(false);
     setRetryToken(t => t + 1);
   }
 
@@ -133,8 +88,6 @@ function Garden() {
       )
     );
   }
-
-  const allFlowers = [...userFlowers, ...SAMPLE_FLOWERS];
 
   return (
     <main
@@ -158,7 +111,7 @@ function Garden() {
         {/* Stats row */}
         <div className="flex items-center justify-center gap-8 mb-10">
           <div className="text-center">
-            <p className="font-heading text-2xl text-moss">{allFlowers.length}</p>
+            <p className="font-heading text-2xl text-moss">{userFlowers.length}</p>
             <p className="text-sage-dark/50 text-xs mt-0.5">flowers planted</p>
           </div>
           <div className="w-px h-8" style={{ background: 'rgba(184, 212, 182, 0.5)' }} />
@@ -168,7 +121,7 @@ function Garden() {
           </div>
           <div className="w-px h-8" style={{ background: 'rgba(184, 212, 182, 0.5)' }} />
           <div className="text-center">
-            <p className="font-heading text-2xl text-moss">{userFlowers.length || 12}</p>
+            <p className="font-heading text-2xl text-moss">{userFlowers.length}</p>
             <p className="text-sage-dark/50 text-xs mt-0.5">bloomed today</p>
           </div>
         </div>
@@ -233,7 +186,22 @@ function Garden() {
       {/* Flower grid */}
       <section className="px-6 pb-24">
         <div className="max-w-5xl mx-auto">
-          <GardenGrid flowers={allFlowers} onSelect={setSelectedFlower} />
+          {hasLoaded && userFlowers.length === 0 ? (
+            <div
+              className="max-w-md mx-auto text-center rounded-3xl px-8 py-12"
+              style={{
+                background: 'rgba(255, 251, 245, 0.7)',
+                border: '1px dashed rgba(184, 212, 182, 0.45)',
+              }}
+            >
+              <p className="font-heading text-xl text-moss mb-2">No blooms yet 🌱</p>
+              <p className="text-sage-dark/65 text-sm leading-relaxed">
+                Be the first to plant one.
+              </p>
+            </div>
+          ) : (
+            <GardenGrid flowers={userFlowers} onSelect={setSelectedFlower} />
+          )}
         </div>
       </section>
 
