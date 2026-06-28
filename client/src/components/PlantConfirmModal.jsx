@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
 
-function PlantConfirmModal({ onCancel, onConfirm }) {
+function PlantConfirmModal({ onCancel, onConfirm, isSubmitting = false }) {
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = ''; };
   }, []);
 
   useEffect(() => {
-    function onKey(e) { if (e.key === 'Escape') onCancel(); }
+    function onKey(e) { if (e.key === 'Escape' && !isSubmitting) onCancel(); }
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [onCancel]);
+  }, [onCancel, isSubmitting]);
 
   return (
     <div
@@ -20,7 +20,7 @@ function PlantConfirmModal({ onCancel, onConfirm }) {
         backdropFilter: 'blur(6px)',
         WebkitBackdropFilter: 'blur(6px)',
       }}
-      onClick={onCancel}
+      onClick={() => { if (!isSubmitting) onCancel(); }}
     >
       <div
         role="dialog"
@@ -45,7 +45,8 @@ function PlantConfirmModal({ onCancel, onConfirm }) {
           <button
             type="button"
             onClick={onCancel}
-            className="flex-1 min-h-11 rounded-full text-sm font-semibold cursor-pointer transition-colors duration-200"
+            disabled={isSubmitting}
+            className="flex-1 min-h-11 rounded-full text-sm font-semibold cursor-pointer transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               color: 'rgba(74,112,72,0.85)',
               border: '1px solid rgba(184,212,182,0.5)',
@@ -59,10 +60,12 @@ function PlantConfirmModal({ onCancel, onConfirm }) {
           <button
             type="button"
             onClick={onConfirm}
-            className="flex-1 min-h-11 bg-sage text-cream rounded-full text-sm font-semibold hover:bg-sage-dark transition-all duration-300 cursor-pointer"
+            disabled={isSubmitting}
+            aria-busy={isSubmitting}
+            className="flex-1 min-h-11 bg-sage text-cream rounded-full text-sm font-semibold hover:bg-sage-dark transition-all duration-300 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-sage"
             style={{ boxShadow: '0 4px 18px rgba(122, 171, 120, 0.42)' }}
           >
-            🌼 Plant in Garden
+            {isSubmitting ? 'Planting…' : '🌼 Plant in Garden'}
           </button>
         </div>
       </div>

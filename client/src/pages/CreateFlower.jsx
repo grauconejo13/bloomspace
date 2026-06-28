@@ -30,6 +30,9 @@ function CreateFlower() {
   const [plantedFlower, setPlantedFlower] = useState(null);
   const [plantCount, setPlantCount] = useState(() => getPlantCount());
   const limitReached = hasReachedPlantLimit(plantCount);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSubmittingRef = useRef(false);
+  const clientPlantIdRef = useRef(null);
 
   function handlePlant() {
     if (limitReached) return;
@@ -47,41 +50,64 @@ function CreateFlower() {
       return;
     }
 
+    clientPlantIdRef.current = typeof crypto !== 'undefined' && crypto.randomUUID
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     setShowConfirm(true);
   }
 
   async function handleConfirmPlant() {
+    // Synchronous ref guard: blocks re-entrant calls fired within the same tick
+    // (spam-clicks, Enter-key repeats) before React has re-rendered the disabled button.
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+    setIsSubmitting(true);
+
     const image = canvasRef.current.getDataURL();
     const trimmedMessage = message.trim();
     const trimmedAuthor = gardenerName.trim() || 'Anonymous Gardener';
     const trimmedLocation = location.trim();
 
     try {
-      await plantFlower({ image, message: trimmedMessage, author: trimmedAuthor, location: trimmedLocation });
-    } catch {
-      const now = Date.now();
-      const flower = {
-        id:           now,
-        image,
-        message:      trimmedMessage,
-        author:       trimmedAuthor,
-        location:     trimmedLocation,
-        plantedAt:    new Date(now).toISOString(),
-        expiresAt:    new Date(now + THREE_DAYS_MS).toISOString(),
-        wateredCount: 0,
-      };
-
       try {
-        const existing = JSON.parse(localStorage.getItem('bloomspaceFlowers') || '[]');
-        localStorage.setItem('bloomspaceFlowers', JSON.stringify([flower, ...existing]));
+        await plantFlower({
+          image,
+          message: trimmedMessage,
+          author: trimmedAuthor,
+          location: trimmedLocation,
+          clientPlantId: clientPlantIdRef.current,
+        });
       } catch {
-        localStorage.setItem('bloomspaceFlowers', JSON.stringify([flower]));
-      }
-    }
+        const now = Date.now();
+        const flower = {
+          id:           now,
+          image,
+          message:      trimmedMessage,
+          author:       trimmedAuthor,
+          location:     trimmedLocation,
+          plantedAt:    new Date(now).toISOString(),
+          expiresAt:    new Date(now + THREE_DAYS_MS).toISOString(),
+          wateredCount: 0,
+        };
 
-    setShowConfirm(false);
-    setPlantedFlower({ image, message: trimmedMessage, author: trimmedAuthor, location: trimmedLocation });
-    setPlantCount(incrementPlantCount());
+        try {
+          const existing = JSON.parse(localStorage.getItem('bloomspaceFlowers') || '[]');
+          localStorage.setItem('bloomspaceFlowers', JSON.stringify([flower, ...existing]));
+        } catch {
+          localStorage.setItem('bloomspaceFlowers', JSON.stringify([flower]));
+        }
+      }
+
+      setShowConfirm(false);
+      setPlantedFlower({ image, message: trimmedMessage, author: trimmedAuthor, location: trimmedLocation });
+      setPlantCount(incrementPlantCount());
+      // Deliberately not resetting isSubmitting on success — the confirm modal and
+      // Plant button both unmount once plantedFlower is set, so there's nothing left to guard.
+    } catch {
+      isSubmittingRef.current = false;
+      setIsSubmitting(false);
+      setError('Could not plant your flower. Please try again.');
+    }
   }
 
   return (
@@ -371,6 +397,7 @@ function CreateFlower() {
         <PlantConfirmModal
           onCancel={() => setShowConfirm(false)}
           onConfirm={handleConfirmPlant}
+          isSubmitting={isSubmitting}
         />
       )}
     </main>

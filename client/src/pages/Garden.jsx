@@ -65,13 +65,22 @@ const SAMPLE_FLOWERS = [
   },
 ];
 
+const WAKEUP_NOTICE_DELAY_MS = 5000;
+
 function Garden() {
   const navigate = useNavigate();
   const [selectedFlower, setSelectedFlower] = useState(null);
   const [userFlowers, setUserFlowers] = useState([]);
+  const [showWakeupNotice, setShowWakeupNotice] = useState(false);
+  const [loadError, setLoadError] = useState(false);
+  const [retryToken, setRetryToken] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+
+    const wakeupTimer = setTimeout(() => {
+      if (!cancelled) setShowWakeupNotice(true);
+    }, WAKEUP_NOTICE_DELAY_MS);
 
     function loadFromLocalStorage() {
       try {
@@ -92,11 +101,23 @@ function Garden() {
         }
       })
       .catch(() => {
-        if (!cancelled) setUserFlowers(loadFromLocalStorage());
+        if (!cancelled) {
+          setUserFlowers(loadFromLocalStorage());
+          setLoadError(true);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setShowWakeupNotice(false);
       });
 
-    return () => { cancelled = true; };
-  }, []);
+    return () => { cancelled = true; clearTimeout(wakeupTimer); };
+  }, [retryToken]);
+
+  function handleRetry() {
+    setLoadError(false);
+    setShowWakeupNotice(false);
+    setRetryToken(t => t + 1);
+  }
 
   function handleFlowerUpdated(updatedFlower) {
     setUserFlowers(prev =>
@@ -156,6 +177,53 @@ function Garden() {
           🌼 Plant a Flower
         </button>
       </section>
+
+      {showWakeupNotice && (
+        <div className="max-w-md mx-auto mb-8 px-6">
+          <div
+            className="rounded-2xl px-5 py-4 text-center"
+            style={{
+              background: 'rgba(184, 212, 182, 0.18)',
+              border: '1px solid rgba(184, 212, 182, 0.40)',
+            }}
+          >
+            <p className="text-sm font-semibold text-moss mb-1">🌱 Bloomspace is waking up…</p>
+            <p className="text-xs text-sage-dark/70 leading-relaxed">
+              Our little garden has been resting. This may take a few moments.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {loadError && (
+        <div className="max-w-md mx-auto mb-8 px-6">
+          <div
+            className="rounded-2xl px-5 py-4 text-center flex flex-col items-center gap-2"
+            style={{
+              background: 'rgba(245, 191, 191, 0.16)',
+              border: '1px solid rgba(245, 191, 191, 0.42)',
+            }}
+          >
+            <p className="text-xs text-sage-dark/75 leading-relaxed">
+              We couldn&rsquo;t reach the garden&rsquo;s database right now — showing flowers saved on this device.
+            </p>
+            <button
+              type="button"
+              onClick={handleRetry}
+              className="text-xs font-semibold px-4 py-1.5 rounded-full cursor-pointer transition-colors duration-200"
+              style={{
+                color: 'rgba(74,112,72,0.85)',
+                border: '1px solid rgba(184,212,182,0.5)',
+                background: 'rgba(255,251,245,0.7)',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,212,182,0.22)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,251,245,0.7)'}
+            >
+              Try again
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Flower grid */}
       <section className="px-6 pb-24">

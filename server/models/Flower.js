@@ -14,6 +14,16 @@ function toCamel(row) {
     };
 }
 
+async function pingDatabase() {
+    const { error } = await supabase
+        .from(TABLE)
+        .select("id")
+        .limit(1);
+
+    if (error) throw error;
+    return true;
+}
+
 async function getActiveFlowers() {
     const { data, error } = await supabase
         .from(TABLE)
@@ -77,6 +87,7 @@ async function waterFlower(id) {
 }
 
 module.exports = {
+    pingDatabase,
     getActiveFlowers,
     findFlowerById,
     createFlower,
