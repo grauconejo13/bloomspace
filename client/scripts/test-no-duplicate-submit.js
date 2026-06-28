@@ -81,11 +81,11 @@ async function runSynchronousSpamClickScenario(browser) {
   });
 
   await page.waitForSelector('text=Your Flower Has Bloomed!', { timeout: 8000 });
-  const sessionCount = await page.evaluate(() => sessionStorage.getItem('bloomspaceSessionPlantCount'));
+  const plantTimestamps = await page.evaluate(() => JSON.parse(localStorage.getItem('bloomspacePlantTimestamps') || '[]'));
   const postCount = getPostCount();
 
   await page.close();
-  return { scenario: 'synchronous spam-click (10x)', postCount, sessionCount, consoleErrors };
+  return { scenario: 'synchronous spam-click (10x)', postCount, plantTimestamps, consoleErrors };
 }
 
 async function runEnterKeySpamScenario(browser) {
@@ -103,11 +103,11 @@ async function runEnterKeySpamScenario(browser) {
   }
 
   await page.waitForSelector('text=Your Flower Has Bloomed!', { timeout: 8000 });
-  const sessionCount = await page.evaluate(() => sessionStorage.getItem('bloomspaceSessionPlantCount'));
+  const plantTimestamps = await page.evaluate(() => JSON.parse(localStorage.getItem('bloomspacePlantTimestamps') || '[]'));
   const postCount = getPostCount();
 
   await page.close();
-  return { scenario: 'Enter-key spam (6x)', postCount, sessionCount, consoleErrors };
+  return { scenario: 'Enter-key spam (6x)', postCount, plantTimestamps, consoleErrors };
 }
 
 async function main() {
@@ -120,9 +120,9 @@ async function main() {
 
   let allPassed = true;
   for (const r of results) {
-    const pass = r.postCount === 1 && r.sessionCount === '1' && r.consoleErrors.length === 0;
+    const pass = r.postCount === 1 && r.plantTimestamps.length === 1 && r.consoleErrors.length === 0;
     allPassed = allPassed && pass;
-    console.log(`[${pass ? 'PASS' : 'FAIL'}] ${r.scenario}: postCount=${r.postCount} sessionCount=${r.sessionCount} consoleErrors=${r.consoleErrors.length}`);
+    console.log(`[${pass ? 'PASS' : 'FAIL'}] ${r.scenario}: postCount=${r.postCount} plantTimestamps=${r.plantTimestamps.length} consoleErrors=${r.consoleErrors.length}`);
     if (r.consoleErrors.length) console.log('  console errors:', r.consoleErrors.join('; '));
   }
 

@@ -5,7 +5,7 @@ import PlantConfirmModal from '../components/PlantConfirmModal';
 import ResumeDraftModal from '../components/ResumeDraftModal';
 import ShareBloomButton from '../components/ShareBloomButton';
 import { plantFlower } from '../services/flowerService';
-import { getPlantCount, incrementPlantCount, hasReachedPlantLimit } from '../utils/sessionPlantLimit';
+import { getPlantTimestamps, recordPlantTimestamp, hasReachedPlantLimit } from '../utils/plantLimit';
 import { trackEvent, ANALYTICS_EVENTS } from '../utils/analytics';
 import { getCustomColors, addCustomColor } from '../utils/customColors';
 import { getDraft, saveDraft, clearDraft } from '../utils/drawingDraft';
@@ -33,8 +33,8 @@ function CreateFlower() {
   const [error, setError]           = useState('');
   const [showConfirm, setShowConfirm] = useState(false);
   const [plantedFlower, setPlantedFlower] = useState(null);
-  const [plantCount, setPlantCount] = useState(() => getPlantCount());
-  const limitReached = hasReachedPlantLimit(plantCount);
+  const [plantTimestamps, setPlantTimestamps] = useState(() => getPlantTimestamps());
+  const limitReached = hasReachedPlantLimit(plantTimestamps);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isSubmittingRef = useRef(false);
   const clientPlantIdRef = useRef(null);
@@ -157,7 +157,7 @@ function CreateFlower() {
 
       setShowConfirm(false);
       setPlantedFlower({ image, message: trimmedMessage, author: trimmedAuthor, location: trimmedLocation });
-      setPlantCount(incrementPlantCount());
+      setPlantTimestamps(recordPlantTimestamp());
       trackEvent(ANALYTICS_EVENTS.FLOWER_CREATED, { method: savedViaApi ? 'api' : 'local_fallback' });
       clearInterval(autosaveIntervalRef.current);
       clearDraft();
@@ -441,9 +441,14 @@ function CreateFlower() {
         {/* Plant CTA */}
         <div className="px-5 pb-6 pt-3 flex flex-col items-end gap-2">
           {limitReached && (
-            <p className="text-xs text-right max-w-xs" style={{ color: 'rgba(74,112,72,0.75)' }}>
-              You&rsquo;ve planted 3 blooms this session 🌸 Come back later or refresh your session.
-            </p>
+            <div className="text-right max-w-xs">
+              <p className="text-xs font-semibold mb-0.5" style={{ color: 'rgba(74,112,72,0.85)' }}>
+                🌸 You&rsquo;ve planted 3 blooms in the last 24 hours.
+              </p>
+              <p className="text-xs" style={{ color: 'rgba(74,112,72,0.65)' }}>
+                Come back tomorrow to draw more, or water the garden while you wait.
+              </p>
+            </div>
           )}
           <button
             onClick={handlePlant}
