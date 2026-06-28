@@ -110,12 +110,14 @@ function FlowerModal({ flower, onClose, onFlowerUpdated }) {
           ×
         </button>
 
-        {/* Flower image */}
+        {/* Flower image — aspect-ratio matches DrawingCanvas's native 800x440
+            resolution so real drawings fill the frame edge-to-edge with no
+            letterboxing, instead of sitting in an unrelated fixed-height box. */}
         <div className="px-5 pt-5">
           <div
-            className="flex items-center justify-center rounded-2xl overflow-hidden"
+            className="w-full flex items-center justify-center rounded-2xl overflow-hidden"
             style={{
-              height: 220,
+              aspectRatio: '800 / 440',
               background: image ? '#fffbf5' : bg,
               border: '1px solid rgba(184, 212, 182, 0.35)',
             }}
