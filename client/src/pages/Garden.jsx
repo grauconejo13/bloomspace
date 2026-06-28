@@ -110,16 +110,19 @@ function Garden() {
 
         {/* Stats row */}
         <div className="flex items-center justify-center gap-8 mb-10">
+
           <div className="text-center">
             <p className="font-heading text-2xl text-moss">{userFlowers.length}</p>
             <p className="text-sage-dark/50 text-xs mt-0.5">flowers planted</p>
           </div>
           <div className="w-px h-8" style={{ background: 'rgba(184, 212, 182, 0.5)' }} />
+
           <div className="text-center">
             <p className="font-heading text-2xl text-moss">42</p>
             <p className="text-sage-dark/50 text-xs mt-0.5">gardeners</p>
           </div>
           <div className="w-px h-8" style={{ background: 'rgba(184, 212, 182, 0.5)' }} />
+          
           <div className="text-center">
             <p className="font-heading text-2xl text-moss">{userFlowers.length}</p>
             <p className="text-sage-dark/50 text-xs mt-0.5">bloomed today</p>

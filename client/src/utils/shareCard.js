@@ -1,3 +1,5 @@
+import { PUBLIC_APP_DISPLAY_URL } from './publicUrl';
+
 const CARD_WIDTH = 1080;
 const CARD_HEIGHT = 1350;
 const PADDING = 56;
@@ -10,6 +12,7 @@ const COLORS = {
   message: '#2d4a2c',
   signature: 'rgba(74, 112, 72, 0.75)',
   tagline: 'rgba(74, 112, 72, 0.60)',
+  footerLink: 'rgba(74, 112, 72, 0.45)',
   watermarkPill: 'rgba(250, 246, 239, 0.85)',
   watermarkText: 'rgba(45, 74, 44, 0.55)',
 };
@@ -146,6 +149,11 @@ async function createShareCardBlob({ image, message, author, location }) {
   ctx.fillStyle = COLORS.tagline;
   ctx.font = '600 26px "Nunito", system-ui, sans-serif';
   ctx.fillText('planted in Bloomspace 🌱', CARD_WIDTH / 2, CARD_HEIGHT - 56);
+
+  // Footer link
+  ctx.fillStyle = COLORS.footerLink;
+  ctx.font = '500 20px "Nunito", system-ui, sans-serif';
+  ctx.fillText(PUBLIC_APP_DISPLAY_URL, CARD_WIDTH / 2, CARD_HEIGHT - 24);
 
   return new Promise((resolve, reject) => {
     canvas.toBlob(blob => {

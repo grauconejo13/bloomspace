@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { createShareCardBlob } from '../utils/shareCard';
 import { trackEvent, ANALYTICS_EVENTS } from '../utils/analytics';
+import { PUBLIC_APP_URL } from '../utils/publicUrl';
 
 const STATUS_PREPARING = 'Preparing your Bloomspace card…';
 const STATUS_DOWNLOADED = 'Share is not supported here, so your card was downloaded.';
@@ -17,9 +18,9 @@ function downloadBlob(blob, filename) {
   URL.revokeObjectURL(url);
 }
 
-function canShareFile(file) {
+function canShareData(data) {
   return typeof navigator.share === 'function'
-    && (typeof navigator.canShare !== 'function' || navigator.canShare({ files: [file] }));
+    && (typeof navigator.canShare !== 'function' || navigator.canShare(data));
 }
 
 function ShareBloomButton({ image, message, author, location }) {
@@ -49,14 +50,16 @@ function ShareBloomButton({ image, message, author, location }) {
     }
 
     const file = new File([blob], 'bloomspace-card.png', { type: 'image/png' });
+    const shareData = {
+      files: [file],
+      title: 'My Bloomspace flower',
+      text: 'planted in Bloomspace 🌱',
+      url: PUBLIC_APP_URL,
+    };
 
     try {
-      if (canShareFile(file)) {
-        await navigator.share({
-          files: [file],
-          title: 'My Bloomspace flower',
-          text: 'planted in Bloomspace 🌱',
-        });
+      if (canShareData(shareData)) {
+        await navigator.share(shareData);
         flashStatus('');
         trackEvent(ANALYTICS_EVENTS.FLOWER_SHARED);
       } else {
