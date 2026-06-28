@@ -104,7 +104,7 @@ function About() {
           About Bloomspace
         </p>
         <h1 className="font-heading text-4xl md:text-5xl text-moss mb-4">
-          A community garden built from small acts of kindness.
+          A community garden grown from small acts of kindness.
         </h1>
       </section>
 
@@ -122,7 +122,9 @@ function About() {
             Project Origin
           </h2>
           <p className="text-sage-dark/75 text-sm leading-relaxed">
-            Add the nwHacks 2025 origin story here.
+            Bloomspace began at nwHacks 2025 as a small team project: a digital
+            garden where people could leave flowers, thoughts, and messages for
+            others to find.
           </p>
         </article>
 
@@ -157,7 +159,9 @@ function About() {
             Original Prototype
           </h2>
           <p className="text-sage-dark/75 text-sm leading-relaxed">
-            Add what the hackathon demo included here.
+            The first version focused on the core idea: plant a flower, leave a
+            message, and let the garden become a shared space of small
+            kindnesses.
           </p>
         </article>
 
@@ -173,7 +177,10 @@ function About() {
             Revival Version
           </h2>
           <p className="text-sage-dark/75 text-sm leading-relaxed">
-            Add what this rebuild adds here.
+            This rebuild expands Bloomspace into a more complete experience with
+            flower drawing, bloom sharing, watering, session safeguards,
+            duplicate-post protection, wake-up handling, and privacy-friendly
+            analytics.
           </p>
         </article>
       </section>
