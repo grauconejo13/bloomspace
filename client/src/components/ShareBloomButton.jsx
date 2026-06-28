@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { createShareCardBlob } from '../utils/shareCard';
+import { trackEvent, ANALYTICS_EVENTS } from '../utils/analytics';
 
 const STATUS_PREPARING = 'Preparing your Bloomspace card…';
 const STATUS_DOWNLOADED = 'Share is not supported here, so your card was downloaded.';
@@ -57,9 +58,11 @@ function ShareBloomButton({ image, message, author, location }) {
           text: 'planted in Bloomspace 🌱',
         });
         flashStatus('');
+        trackEvent(ANALYTICS_EVENTS.FLOWER_SHARED);
       } else {
         downloadBlob(blob, 'bloomspace-card.png');
         flashStatus(STATUS_DOWNLOADED);
+        trackEvent(ANALYTICS_EVENTS.SHARE_DOWNLOADED);
       }
     } catch (err) {
       if (err?.name === 'AbortError') {
@@ -67,6 +70,7 @@ function ShareBloomButton({ image, message, author, location }) {
       } else {
         downloadBlob(blob, 'bloomspace-card.png');
         flashStatus(STATUS_DOWNLOADED);
+        trackEvent(ANALYTICS_EVENTS.SHARE_DOWNLOADED);
       }
     }
 

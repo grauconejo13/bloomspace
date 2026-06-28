@@ -3,6 +3,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const flowerRoutes = require("./routes/flowerRoutes");
+const analyticsRoutes = require("./routes/analyticsRoutes");
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/flowers", flowerRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 const PORT = process.env.PORT || 5000;
 

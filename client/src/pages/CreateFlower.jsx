@@ -5,6 +5,7 @@ import PlantConfirmModal from '../components/PlantConfirmModal';
 import ShareBloomButton from '../components/ShareBloomButton';
 import { plantFlower } from '../services/flowerService';
 import { getPlantCount, incrementPlantCount, hasReachedPlantLimit } from '../utils/sessionPlantLimit';
+import { trackEvent, ANALYTICS_EVENTS } from '../utils/analytics';
 
 const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 
@@ -68,6 +69,8 @@ function CreateFlower() {
     const trimmedAuthor = gardenerName.trim() || 'Anonymous Gardener';
     const trimmedLocation = location.trim();
 
+    let savedViaApi = true;
+
     try {
       try {
         await plantFlower({
@@ -78,6 +81,7 @@ function CreateFlower() {
           clientPlantId: clientPlantIdRef.current,
         });
       } catch {
+        savedViaApi = false;
         const now = Date.now();
         const flower = {
           id:           now,
@@ -101,6 +105,7 @@ function CreateFlower() {
       setShowConfirm(false);
       setPlantedFlower({ image, message: trimmedMessage, author: trimmedAuthor, location: trimmedLocation });
       setPlantCount(incrementPlantCount());
+      trackEvent(ANALYTICS_EVENTS.FLOWER_CREATED, { method: savedViaApi ? 'api' : 'local_fallback' });
       // Deliberately not resetting isSubmitting on success — the confirm modal and
       // Plant button both unmount once plantedFlower is set, so there's nothing left to guard.
     } catch {

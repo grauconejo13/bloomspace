@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import GardenGrid from '../components/GardenGrid';
 import FlowerModal from '../components/FlowerModal';
 import { fetchFlowers } from '../services/flowerService';
+import { trackEvent, ANALYTICS_EVENTS } from '../utils/analytics';
 
 function formatAge(isoString) {
   const mins = Math.round((Date.now() - new Date(isoString).getTime()) / 60000);
@@ -74,6 +75,10 @@ function Garden() {
   const [showWakeupNotice, setShowWakeupNotice] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [retryToken, setRetryToken] = useState(0);
+
+  useEffect(() => {
+    trackEvent(ANALYTICS_EVENTS.GARDEN_VIEW);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
