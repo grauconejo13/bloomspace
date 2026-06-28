@@ -8,8 +8,13 @@ async function pingFlowers() {
     return data;
 }
 
+// A bounded timeout ensures this always resolves or rejects — without it, a hung
+// connection to a sleeping backend can leave callers (and any UI state tied to the
+// promise settling, like Garden's wake-up banner) waiting indefinitely.
+const FETCH_FLOWERS_TIMEOUT_MS = 30000;
+
 async function fetchFlowers() {
-    const { data } = await axios.get(API_URL);
+    const { data } = await axios.get(API_URL, { timeout: FETCH_FLOWERS_TIMEOUT_MS });
     return data;
 }
 

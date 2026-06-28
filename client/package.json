@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test:duplicate-submit": "node scripts/test-no-duplicate-submit.js"
+    "test:duplicate-submit": "node scripts/test-no-duplicate-submit.js",
+    "test:wakeup-banner": "node scripts/test-wakeup-banner.js"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",

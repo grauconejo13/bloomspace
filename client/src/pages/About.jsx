@@ -83,7 +83,9 @@ function About() {
 
   useEffect(() => {
     if (location.hash === "#faq") {
-      document.getElementById("faq")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      document
+        .getElementById("faq")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [location.hash]);
 
@@ -116,7 +118,9 @@ function About() {
             boxShadow: "0 6px 24px rgba(45, 74, 44, 0.06)",
           }}
         >
-          <h2 className="font-heading text-xl text-moss mb-3">Project Origin</h2>
+          <h2 className="font-heading text-xl text-moss mb-3">
+            Project Origin
+          </h2>
           <p className="text-sage-dark/75 text-sm leading-relaxed">
             Add the nwHacks 2025 origin story here.
           </p>
@@ -130,12 +134,14 @@ function About() {
             boxShadow: "0 6px 24px rgba(45, 74, 44, 0.06)",
           }}
         >
-          <h2 className="font-heading text-xl text-moss mb-3">Original Hackathon Team</h2>
+          <h2 className="font-heading text-xl text-moss mb-3">
+            Original Hackathon Team
+          </h2>
           <ul className="space-y-1.5 text-sage-dark/75 text-sm leading-relaxed">
             <li>Vanessa Victorino — Frontend Development</li>
-            <li>[Name] — Concept &amp; Backend Development</li>
-            <li>[Name] — Presentation</li>
-            <li>[Name] — Project Setup &amp; Support</li>
+            <li>Erika Feng — Concept &amp; Backend Development</li>
+            <li>Zara Shaikh — Presentation</li>
+            <li>Cherie Huang — Project Setup &amp; Support</li>
           </ul>
         </article>
 
@@ -147,7 +153,9 @@ function About() {
             boxShadow: "0 6px 24px rgba(45, 74, 44, 0.06)",
           }}
         >
-          <h2 className="font-heading text-xl text-moss mb-3">Original Prototype</h2>
+          <h2 className="font-heading text-xl text-moss mb-3">
+            Original Prototype
+          </h2>
           <p className="text-sage-dark/75 text-sm leading-relaxed">
             Add what the hackathon demo included here.
           </p>
@@ -161,7 +169,9 @@ function About() {
             boxShadow: "0 6px 24px rgba(45, 74, 44, 0.06)",
           }}
         >
-          <h2 className="font-heading text-xl text-moss mb-3">Revival Version</h2>
+          <h2 className="font-heading text-xl text-moss mb-3">
+            Revival Version
+          </h2>
           <p className="text-sage-dark/75 text-sm leading-relaxed">
             Add what this rebuild adds here.
           </p>

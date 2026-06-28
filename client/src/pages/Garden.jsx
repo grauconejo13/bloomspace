@@ -136,7 +136,7 @@ function Garden() {
         </button>
       </section>
 
-      {showWakeupNotice && (
+      {showWakeupNotice && !loadError && (
         <div className="max-w-md mx-auto mb-8 px-6">
           <div
             className="rounded-2xl px-5 py-4 text-center"
