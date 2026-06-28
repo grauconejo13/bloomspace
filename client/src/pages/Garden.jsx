@@ -203,29 +203,29 @@ function Garden() {
         </div>
       )}
 
-      {/* Flower grid */}
-      <section className="px-6 pb-24">
-        <div className="max-w-5xl mx-auto">
-          {hasLoaded && userFlowers.length === 0 ? (
-            <div
-              className="max-w-md mx-auto text-center rounded-3xl px-8 py-12"
-              style={{
-                background: "rgba(255, 251, 245, 0.7)",
-                border: "1px dashed rgba(184, 212, 182, 0.45)",
-              }}
-            >
-              <p className="font-heading text-xl text-moss mb-2">
-                No blooms yet 🌱
-              </p>
-              <p className="text-sage-dark/65 text-sm leading-relaxed">
-                Be the first to plant one.
-              </p>
-            </div>
-          ) : (
-            <GardenGrid flowers={userFlowers} onSelect={setSelectedFlower} />
-          )}
-        </div>
-      </section>
+     {/* Flower grid */}
+<section className="px-0 sm:px-6 pb-24">
+  <div className="w-full sm:max-w-5xl sm:mx-auto">
+    {hasLoaded && userFlowers.length === 0 ? (
+      <div
+        className="max-w-md mx-auto text-center rounded-3xl px-8 py-12"
+        style={{
+          background: "rgba(255, 251, 245, 0.7)",
+          border: "1px dashed rgba(184, 212, 182, 0.45)",
+        }}
+      >
+        <p className="font-heading text-xl text-moss mb-2">
+          No blooms yet 🌱
+        </p>
+        <p className="text-sage-dark/65 text-sm leading-relaxed">
+          Be the first to plant one.
+        </p>
+      </div>
+    ) : (
+      <GardenGrid flowers={userFlowers} onSelect={setSelectedFlower} />
+    )}
+  </div>
+</section>
 
       {selectedFlower && (
         <FlowerModal
