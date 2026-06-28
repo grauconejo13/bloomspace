@@ -1,13 +1,17 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DrawingCanvas from '../components/DrawingCanvas';
 import PlantConfirmModal from '../components/PlantConfirmModal';
+import ResumeDraftModal from '../components/ResumeDraftModal';
 import ShareBloomButton from '../components/ShareBloomButton';
 import { plantFlower } from '../services/flowerService';
 import { getPlantCount, incrementPlantCount, hasReachedPlantLimit } from '../utils/sessionPlantLimit';
 import { trackEvent, ANALYTICS_EVENTS } from '../utils/analytics';
+import { getCustomColors, addCustomColor } from '../utils/customColors';
+import { getDraft, saveDraft, clearDraft } from '../utils/drawingDraft';
 
 const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
+const AUTOSAVE_INTERVAL_MS = 3000;
 
 const PRESET_COLORS = [
   { label: 'Moss',     value: '#2d4a2c' },
@@ -34,6 +38,55 @@ function CreateFlower() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isSubmittingRef = useRef(false);
   const clientPlantIdRef = useRef(null);
+  const [customColors, setCustomColors] = useState(() => getCustomColors());
+  const [pendingDraft] = useState(() => getDraft());
+  const [showResumePrompt, setShowResumePrompt] = useState(() => !!pendingDraft);
+  const showResumePromptRef = useRef(showResumePrompt);
+  const autosaveIntervalRef = useRef(null);
+  const draftStateRef = useRef({ message, color, strokeSize });
+
+  useEffect(() => {
+    showResumePromptRef.current = showResumePrompt;
+  }, [showResumePrompt]);
+
+  useEffect(() => {
+    draftStateRef.current = { message, color, strokeSize };
+  }, [message, color, strokeSize]);
+
+  useEffect(() => {
+    autosaveIntervalRef.current = setInterval(() => {
+      if (showResumePromptRef.current) return;
+
+      const strokes = canvasRef.current?.getStrokes() ?? [];
+      const { message: draftMessage, color: draftColor, strokeSize: draftStrokeSize } = draftStateRef.current;
+      const trimmedMessage = draftMessage.trim();
+
+      // Nothing new worth checkpointing right now — leave any existing saved draft
+      // alone. Undo/redo/clear must never silently erase a resumable draft; only a
+      // successful plant or an explicit "Start over" does that.
+      if (strokes.length === 0 && !trimmedMessage) return;
+
+      saveDraft({ strokes, color: draftColor, strokeSize: draftStrokeSize, message: trimmedMessage });
+    }, AUTOSAVE_INTERVAL_MS);
+
+    return () => clearInterval(autosaveIntervalRef.current);
+  }, []);
+
+  function handleResumeDraft() {
+    if (pendingDraft) {
+      if (pendingDraft.color) setColor(pendingDraft.color);
+      if (pendingDraft.strokeSize) setStrokeSize(pendingDraft.strokeSize);
+      if (pendingDraft.message) setMessage(pendingDraft.message);
+      canvasRef.current?.loadStrokes(pendingDraft.strokes);
+    }
+    setShowResumePrompt(false);
+  }
+
+  function handleStartOver() {
+    clearDraft();
+    canvasRef.current?.clear();
+    setShowResumePrompt(false);
+  }
 
   function handlePlant() {
     if (limitReached) return;
@@ -106,6 +159,8 @@ function CreateFlower() {
       setPlantedFlower({ image, message: trimmedMessage, author: trimmedAuthor, location: trimmedLocation });
       setPlantCount(incrementPlantCount());
       trackEvent(ANALYTICS_EVENTS.FLOWER_CREATED, { method: savedViaApi ? 'api' : 'local_fallback' });
+      clearInterval(autosaveIntervalRef.current);
+      clearDraft();
       // Deliberately not resetting isSubmitting on success — the confirm modal and
       // Plant button both unmount once plantedFlower is set, so there's nothing left to guard.
     } catch {
@@ -113,6 +168,26 @@ function CreateFlower() {
       setIsSubmitting(false);
       setError('Could not plant your flower. Please try again.');
     }
+  }
+
+  function renderColorSwatch(value, label) {
+    return (
+      <button
+        key={value}
+        title={label || value}
+        onClick={() => setColor(value)}
+        className="rounded-full transition-all duration-150 hover:scale-110 focus:outline-none"
+        style={{
+          width: 22,
+          height: 22,
+          background: value,
+          border: color === value
+            ? '2.5px solid #2d4a2c'
+            : '2px solid rgba(45, 74, 44, 0.15)',
+          transform: color === value ? 'scale(1.18)' : undefined,
+        }}
+      />
+    );
   }
 
   return (
@@ -195,24 +270,9 @@ function CreateFlower() {
           }}
         >
           {/* Colour swatches */}
-          <div className="flex items-center gap-1.5">
-            {PRESET_COLORS.map(({ label, value }) => (
-              <button
-                key={value}
-                title={label}
-                onClick={() => setColor(value)}
-                className="rounded-full transition-all duration-150 hover:scale-110 focus:outline-none"
-                style={{
-                  width: 22,
-                  height: 22,
-                  background: value,
-                  border: color === value
-                    ? '2.5px solid #2d4a2c'
-                    : '2px solid rgba(45, 74, 44, 0.15)',
-                  transform: color === value ? 'scale(1.18)' : undefined,
-                }}
-              />
-            ))}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {PRESET_COLORS.map(({ label, value }) => renderColorSwatch(value, label))}
+            {customColors.map(value => renderColorSwatch(value))}
 
             {/* Custom colour input */}
             <label
@@ -230,6 +290,7 @@ function CreateFlower() {
                 type="color"
                 value={color}
                 onChange={e => setColor(e.target.value)}
+                onBlur={e => setCustomColors(addCustomColor(e.target.value))}
                 className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
               />
             </label>
@@ -403,6 +464,13 @@ function CreateFlower() {
           onCancel={() => setShowConfirm(false)}
           onConfirm={handleConfirmPlant}
           isSubmitting={isSubmitting}
+        />
+      )}
+
+      {showResumePrompt && (
+        <ResumeDraftModal
+          onResume={handleResumeDraft}
+          onStartOver={handleStartOver}
         />
       )}
     </main>

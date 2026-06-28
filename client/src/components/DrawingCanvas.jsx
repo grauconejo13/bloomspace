@@ -74,6 +74,16 @@ const DrawingCanvas = forwardRef(function DrawingCanvas({ color, strokeSize }, r
     getDataURL() {
       return canvasRef.current.toDataURL();
     },
+    getStrokes() {
+      return strokesRef.current;
+    },
+    loadStrokes(strokes) {
+      strokesRef.current = Array.isArray(strokes)
+        ? strokes.filter(s => s && Array.isArray(s.points))
+        : [];
+      redoStackRef.current = [];
+      redrawAll();
+    },
   }));
 
   function getPos(e) {
