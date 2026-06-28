@@ -98,11 +98,12 @@ function FlowerModal({ flower, onClose, onFlowerUpdated }) {
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full text-lg cursor-pointer transition-colors duration-150 active:opacity-60"
+          className="absolute top-8 right-8 z-10 w-8 h-8 flex items-center justify-center rounded-full text-lg cursor-pointer transition-colors duration-150 active:opacity-60"
           style={{
             background: 'rgba(250,246,239,0.90)',
             border: '1px solid rgba(184,212,182,0.40)',
             color: 'rgba(74,112,72,0.70)',
+            boxShadow: '0 2px 8px rgba(45, 74, 44, 0.18)',
           }}
           aria-label="Close"
         >
@@ -110,15 +111,21 @@ function FlowerModal({ flower, onClose, onFlowerUpdated }) {
         </button>
 
         {/* Flower image */}
-        <div
-          className="flex items-center justify-center"
-          style={{ height: 220, background: image ? '#fffbf5' : bg }}
-        >
-          {image ? (
-            <img src={image} alt="drawn flower" className="w-full h-full object-contain" />
-          ) : (
-            <span className="text-7xl select-none">{emoji}</span>
-          )}
+        <div className="px-5 pt-5">
+          <div
+            className="flex items-center justify-center rounded-2xl overflow-hidden"
+            style={{
+              height: 220,
+              background: image ? '#fffbf5' : bg,
+              border: '1px solid rgba(184, 212, 182, 0.35)',
+            }}
+          >
+            {image ? (
+              <img src={image} alt="drawn flower" className="w-full h-full object-contain" />
+            ) : (
+              <span className="text-7xl select-none">{emoji}</span>
+            )}
+          </div>
         </div>
 
         {/* Content */}
