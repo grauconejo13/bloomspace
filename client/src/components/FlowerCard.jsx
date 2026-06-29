@@ -46,7 +46,7 @@ function FlowerCard({ emoji, bg, image, author, expiresAt, wateredCount, onSelec
             className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
             style={{
               background: timeLeft.urgent ? 'rgba(245,191,191,0.84)' : 'rgba(250,246,239,0.84)',
-              color:      timeLeft.urgent ? '#b84444'                 : 'rgba(74,112,72,0.85)',
+              color:      timeLeft.urgent ? '#b84444'                 : 'rgba(45,74,44,0.85)',
               backdropFilter: 'blur(4px)',
               WebkitBackdropFilter: 'blur(4px)',
             }}
@@ -58,7 +58,7 @@ function FlowerCard({ emoji, bg, image, author, expiresAt, wateredCount, onSelec
               className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
               style={{
                 background: 'rgba(184,216,232,0.84)',
-                color: 'rgba(74,112,72,0.85)',
+                color: 'rgba(45,74,44,0.85)',
                 backdropFilter: 'blur(4px)',
                 WebkitBackdropFilter: 'blur(4px)',
               }}

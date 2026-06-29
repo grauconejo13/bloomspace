@@ -7,8 +7,22 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="A community wellness garden where you can draw a flower and plant a positive message for the world to see." />
-    <title>Bloomspace</title>
+    <!-- title/description/canonical/Open Graph/Twitter tags are rendered per-page by
+         react-helmet-async (see src/components/SEO.jsx, mounted on every route — Home,
+         Garden, Create, About, and the 404 catch-all all cover this). They used to be
+         hardcoded here too, but react-helmet-async only manages tags it renders itself
+         — it has no way to "claim" pre-existing static ones in a non-SSR app, so the
+         two copies just sat side by side as duplicates (and duplicate canonical/og:url
+         tags are actively bad for SEO). Keeping this file to the truly static,
+         route-independent head elements avoids that.
+
+         og:image/twitter:image (set in SEO.jsx) point at client/public/og-image.png,
+         which does NOT exist yet — no purpose-built social preview image exists in the
+         repo (the only candidate, wallpaper-bloom.png, is a ~3MB hero photo never sized
+         for this and far above recommended weight). To finish this, add an image there:
+           - 1200x630px (1.91:1), PNG or JPG, ideally well under 1MB
+           - on-brand: cream background, the flower mark + "Bloomspace" wordmark -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet" />

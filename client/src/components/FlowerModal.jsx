@@ -102,7 +102,7 @@ function FlowerModal({ flower, onClose, onFlowerUpdated }) {
           style={{
             background: 'rgba(250,246,239,0.90)',
             border: '1px solid rgba(184,212,182,0.40)',
-            color: 'rgba(74,112,72,0.70)',
+            color: 'rgba(45,74,44,0.85)',
             boxShadow: '0 2px 8px rgba(45, 74, 44, 0.18)',
           }}
           aria-label="Close"
@@ -140,7 +140,7 @@ function FlowerModal({ flower, onClose, onFlowerUpdated }) {
                 className="text-xs font-medium px-2.5 py-1 rounded-full"
                 style={{
                   background: timeLeft.urgent ? 'rgba(245,191,191,0.40)' : 'rgba(184,212,182,0.35)',
-                  color:      timeLeft.urgent ? '#b84444'                 : 'rgba(74,112,72,0.85)',
+                  color:      timeLeft.urgent ? '#b84444'                 : 'rgba(45,74,44,0.85)',
                 }}
               >
                 🌿 {timeLeft.label}
@@ -150,7 +150,7 @@ function FlowerModal({ flower, onClose, onFlowerUpdated }) {
                   className="text-xs font-medium px-2.5 py-1 rounded-full"
                   style={{
                     background: 'rgba(184,216,232,0.30)',
-                    color: 'rgba(74,112,72,0.75)',
+                    color: 'rgba(45,74,44,0.85)',
                   }}
                 >
                   💧 Refreshed {wateredCount}×
@@ -161,7 +161,7 @@ function FlowerModal({ flower, onClose, onFlowerUpdated }) {
 
           <div
             className="flex items-center justify-between text-xs border-t pt-3"
-            style={{ borderColor: 'rgba(184,212,182,0.28)', color: 'rgba(74,112,72,0.55)' }}
+            style={{ borderColor: 'rgba(184,212,182,0.28)', color: 'rgba(45,74,44,0.85)' }}
           >
             <span>— {author}{location ? `, ${location}` : ''}</span>
             <span>{plantedAt}</span>
@@ -175,7 +175,7 @@ function FlowerModal({ flower, onClose, onFlowerUpdated }) {
                 className="w-full min-h-11 flex items-center justify-center gap-1.5 text-sm font-semibold rounded-xl cursor-pointer transition-opacity duration-150 active:opacity-60"
                 style={{
                   background: 'rgba(184,216,232,0.32)',
-                  color:      'rgba(74,112,72,0.88)',
+                  color:      'rgba(45,74,44,0.88)',
                   border:     '1px solid rgba(184,216,232,0.50)',
                 }}
                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,216,232,0.52)'}
@@ -184,7 +184,7 @@ function FlowerModal({ flower, onClose, onFlowerUpdated }) {
                 💧 Water Flower
               </button>
               {justWatered && (
-                <p className="text-center text-xs" style={{ color: 'rgba(74,112,72,0.60)' }}>
+                <p className="text-center text-xs" style={{ color: 'rgba(45,74,44,0.85)' }}>
                   Bloom refreshed for 3 days.
                 </p>
               )}

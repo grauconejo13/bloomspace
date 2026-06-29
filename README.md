@@ -22,7 +22,7 @@ The original prototype explored the idea of a shared digital garden for mental w
 * Generate a shareable Bloomspace card
 * Share blooms through native device sharing
 * Download bloom cards as PNG when sharing is unavailable
-* Limit planting to 3 blooms per browser session
+* Limit planting to 3 blooms per 24 hours per browser
 * Prevent duplicate bloom submissions
 * Show friendly loading messages during backend/database wake-up delays
 * Track privacy-friendly product analytics
@@ -52,8 +52,8 @@ Watering a flower refreshes its bloom time back to 3 days from the current time.
 ### Database & Storage
 
 * Supabase
-* localStorage fallback for resilience
-* sessionStorage for browser-session limits
+* localStorage fallback for resilience and for the 24-hour plant limit
+* sessionStorage for per-session custom color slots
 
 ### Testing
 
@@ -78,7 +78,7 @@ Bloomspace is currently being prepared for public sharing as a portfolio-ready f
 * Added shareable PNG Bloomspace card
 * Added native Web Share support
 * Added PNG download fallback
-* Added 3-bloom browser-session limit
+* Added 3-bloom-per-24-hour limit
 * Added duplicate submission protection
 * Added Supabase wake-up handling
 * Added privacy-friendly analytics events

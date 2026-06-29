@@ -37,7 +37,7 @@ function PlantConfirmModal({ onCancel, onConfirm, isSubmitting = false }) {
         <h2 className="font-heading text-2xl text-moss mb-3">
           Ready to plant this flower?
         </h2>
-        <p className="text-sage-dark/70 text-sm leading-relaxed mb-6">
+        <p className="text-moss/80 text-sm leading-relaxed mb-6">
           Your flower will bloom for 3 days. If other gardeners water it, its bloom time refreshes.
         </p>
 
@@ -48,7 +48,7 @@ function PlantConfirmModal({ onCancel, onConfirm, isSubmitting = false }) {
             disabled={isSubmitting}
             className="flex-1 min-h-11 rounded-full text-sm font-semibold cursor-pointer transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
-              color: 'rgba(74,112,72,0.85)',
+              color: 'rgba(45,74,44,0.85)',
               border: '1px solid rgba(184,212,182,0.5)',
               background: 'transparent',
             }}

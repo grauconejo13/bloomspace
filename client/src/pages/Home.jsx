@@ -1,5 +1,6 @@
 import wallpaper from "../assets/wallpaper-bloom.png";
 import { Link } from "react-router-dom";
+import SEO from "../components/SEO";
 
 const steps = [
   {
@@ -43,6 +44,11 @@ const steps = [
 function Home() {
   return (
     <main className="flex-1">
+      <SEO
+        title="Plant a Flower, Share a Kind Word"
+        description="A community wellness garden where you can draw a flower and plant a positive message for the world to see."
+        path="/"
+      />
       {/* Hero */}
       <section
         className="relative flex flex-col items-center justify-center text-center px-6 py-28 min-h-[85vh] overflow-hidden"
@@ -154,7 +160,7 @@ function Home() {
           <p className="text-sage-dark text-lg max-w-md leading-relaxed">
             A community wellness garden built from small acts of kindness.
           </p>
-          <p className="text-sage-dark/80 text-sm max-w-sm leading-relaxed">
+          <p className="text-moss/80 text-sm max-w-sm leading-relaxed">
             Draw a flower, write a positive message, and plant it for the world
             to see.
           </p>
@@ -214,7 +220,7 @@ function Home() {
                 className="w-1.5 h-1.5 rounded-full"
                 style={{ background: "rgba(122, 171, 120, 0.7)" }}
               />
-              <span className="text-sage-dark/65 text-xs">
+              <span className="text-moss/80 text-xs">
                 Garden is growing
               </span>
             </div>
@@ -242,7 +248,7 @@ function Home() {
             </p>
             <div className="flex items-center gap-1.5 mt-1">
               <span className="text-sm">🌿</span>
-              <span className="text-sage-dark/60 text-xs italic">
+              <span className="text-moss/80 text-xs italic">
                 — a fellow gardener
               </span>
             </div>
@@ -260,7 +266,7 @@ function Home() {
             <h2 className="font-heading text-3xl md:text-4xl text-moss mb-3">
               How It Works
             </h2>
-            <p className="text-sage-dark/65 text-sm">
+            <p className="text-moss/80 text-sm">
               Three simple steps to join the garden.
             </p>
           </div>
@@ -296,7 +302,7 @@ function Home() {
 
                 <p
                   className="text-xs font-bold tracking-widest uppercase"
-                  style={{ color: "rgba(122, 171, 120, 0.72)" }}
+                  style={{ color: "rgba(45, 74, 44, 0.80)" }}
                 >
                   Step {number}
                 </p>
@@ -305,7 +311,7 @@ function Home() {
                 </h3>
                 <p
                   className="text-sm leading-relaxed"
-                  style={{ color: "rgba(74, 112, 72, 0.75)" }}
+                  style={{ color: "rgba(45, 74, 44, 0.80)" }}
                 >
                   {desc}
                 </p>

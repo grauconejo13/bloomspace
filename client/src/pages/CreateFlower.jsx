@@ -4,6 +4,7 @@ import DrawingCanvas from '../components/DrawingCanvas';
 import PlantConfirmModal from '../components/PlantConfirmModal';
 import ResumeDraftModal from '../components/ResumeDraftModal';
 import ShareBloomButton from '../components/ShareBloomButton';
+import SEO from '../components/SEO';
 import { plantFlower } from '../services/flowerService';
 import { getPlantTimestamps, recordPlantTimestamp, hasReachedPlantLimit } from '../utils/plantLimit';
 import { trackEvent, ANALYTICS_EVENTS } from '../utils/analytics';
@@ -195,12 +196,17 @@ function CreateFlower() {
       className="flex-1 py-16 px-6"
       style={{ background: 'linear-gradient(to bottom, #faf6ef, #f2e9d8)' }}
     >
+      <SEO
+        title="Plant a Flower"
+        description="Draw your bloom, write a kind message, and plant it in the shared Bloomspace garden."
+        path="/create"
+      />
       {plantedFlower ? (
         <div className="max-w-md mx-auto text-center">
           <h1 className="font-heading text-4xl md:text-5xl text-moss mb-3">
             Your Flower Has Bloomed! 🌼
           </h1>
-          <p className="text-sage-dark/70 text-sm max-w-sm mx-auto leading-relaxed mb-8">
+          <p className="text-moss/80 text-sm max-w-sm mx-auto leading-relaxed mb-8">
             It&rsquo;s growing in the shared garden now. Share your bloom card with the world, or go see it live.
           </p>
 
@@ -231,7 +237,7 @@ function CreateFlower() {
             <button
               onClick={() => navigate('/garden')}
               className="text-xs font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
-              style={{ color: 'rgba(74,112,72,0.75)' }}
+              style={{ color: 'rgba(45,74,44,0.80)' }}
               onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,212,182,0.22)'}
               onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
             >
@@ -246,7 +252,7 @@ function CreateFlower() {
         <h1 className="font-heading text-4xl md:text-5xl text-moss mb-3">
           Plant a Flower
         </h1>
-        <p className="text-sage-dark/70 text-sm max-w-sm mx-auto leading-relaxed">
+        <p className="text-moss/80 text-sm max-w-sm mx-auto leading-relaxed">
           Draw your bloom, write a message, and send it to the shared garden.
         </p>
       </div>
@@ -285,7 +291,7 @@ function CreateFlower() {
                 background: 'rgba(255,251,245,0.8)',
               }}
             >
-              <span className="text-[9px] text-sage-dark/50 select-none">+</span>
+              <span className="text-[9px] text-moss/80 select-none">+</span>
               <input
                 type="color"
                 value={color}
@@ -301,7 +307,7 @@ function CreateFlower() {
 
           {/* Stroke size */}
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-bold tracking-widest uppercase text-sage-dark/50">
+            <span className="text-[10px] font-bold tracking-widest uppercase text-moss/80">
               Size
             </span>
             <input
@@ -330,7 +336,7 @@ function CreateFlower() {
           <button
             onClick={() => canvasRef.current?.undo()}
             className="text-xs font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
-            style={{ color: 'rgba(74,112,72,0.75)' }}
+            style={{ color: 'rgba(45,74,44,0.80)' }}
             onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,212,182,0.22)'}
             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
           >
@@ -340,7 +346,7 @@ function CreateFlower() {
           <button
             onClick={() => canvasRef.current?.redo()}
             className="text-xs font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
-            style={{ color: 'rgba(74,112,72,0.75)' }}
+            style={{ color: 'rgba(45,74,44,0.80)' }}
             onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,212,182,0.22)'}
             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
           >
@@ -350,7 +356,7 @@ function CreateFlower() {
           <button
             onClick={() => canvasRef.current?.clear()}
             className="text-xs font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
-            style={{ color: 'rgba(74,112,72,0.75)' }}
+            style={{ color: 'rgba(45,74,44,0.80)' }}
             onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,212,182,0.22)'}
             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
           >
@@ -360,7 +366,7 @@ function CreateFlower() {
           <button
             onClick={() => { if (canvasRef.current?.save() === false) setError('Please draw something before saving.'); }}
             className="text-xs font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
-            style={{ color: 'rgba(74,112,72,0.75)' }}
+            style={{ color: 'rgba(45,74,44,0.80)' }}
             onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,212,182,0.22)'}
             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
           >
@@ -375,10 +381,11 @@ function CreateFlower() {
 
         {/* Message input */}
         <div className="px-5 pt-4 pb-2">
-          <label className="block text-[10px] font-bold tracking-widest uppercase text-sage-dark/50 mb-2">
+          <label htmlFor="bloom-message" className="block text-[10px] font-bold tracking-widest uppercase text-moss/80 mb-2">
             Your Message
           </label>
           <textarea
+            id="bloom-message"
             value={message}
             onChange={e => { setMessage(e.target.value); setError(''); }}
             placeholder="Write a kind word, wish, or intention to attach to your flower…"
@@ -399,10 +406,11 @@ function CreateFlower() {
         {/* Gardener details */}
         <div className="px-5 pt-2 pb-2 flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
-            <label className="block text-[10px] font-bold tracking-widest uppercase text-sage-dark/50 mb-2">
+            <label htmlFor="gardener-name" className="block text-[10px] font-bold tracking-widest uppercase text-moss/80 mb-2">
               Your Name (optional)
             </label>
             <input
+              id="gardener-name"
               type="text"
               value={gardenerName}
               onChange={e => setGardenerName(e.target.value)}
@@ -418,10 +426,11 @@ function CreateFlower() {
             />
           </div>
           <div className="flex-1">
-            <label className="block text-[10px] font-bold tracking-widest uppercase text-sage-dark/50 mb-2">
+            <label htmlFor="gardener-location" className="block text-[10px] font-bold tracking-widest uppercase text-moss/80 mb-2">
               Location (optional)
             </label>
             <input
+              id="gardener-location"
               type="text"
               value={location}
               onChange={e => setLocation(e.target.value)}
@@ -442,10 +451,10 @@ function CreateFlower() {
         <div className="px-5 pb-6 pt-3 flex flex-col items-end gap-2">
           {limitReached && (
             <div className="text-right max-w-xs">
-              <p className="text-xs font-semibold mb-0.5" style={{ color: 'rgba(74,112,72,0.85)' }}>
+              <p className="text-xs font-semibold mb-0.5" style={{ color: 'rgba(45,74,44,0.85)' }}>
                 🌸 You&rsquo;ve planted 3 blooms in the last 24 hours.
               </p>
-              <p className="text-xs" style={{ color: 'rgba(74,112,72,0.65)' }}>
+              <p className="text-xs" style={{ color: 'rgba(45,74,44,0.80)' }}>
                 Come back tomorrow to draw more, or water the garden while you wait.
               </p>
             </div>

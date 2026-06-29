@@ -4,6 +4,7 @@ import GardenGrid from "../components/GardenGrid";
 import FlowerModal from "../components/FlowerModal";
 import { fetchFlowers } from "../services/flowerService";
 import { trackEvent, ANALYTICS_EVENTS } from "../utils/analytics";
+import SEO from "../components/SEO";
 
 function formatAge(isoString) {
   const mins = Math.round((Date.now() - new Date(isoString).getTime()) / 60000);
@@ -105,15 +106,20 @@ function Garden() {
       className="flex-1"
       style={{ background: "linear-gradient(to bottom, #faf6ef, #f2e9d8)" }}
     >
+      <SEO
+        title="The Garden"
+        description="Browse blooms drawn and planted by people around the world. Every flower carries a kind word."
+        path="/garden"
+      />
       {/* Page header */}
       <section className="text-center px-6 pt-20 pb-12">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-sage-dark/45 mb-4">
+        <p className="text-[10px] font-bold tracking-widest uppercase text-moss/80 mb-4">
           Community Garden
         </p>
         <h1 className="font-heading text-4xl md:text-5xl text-moss mb-4">
           The Garden
         </h1>
-        <p className="text-sage-dark/65 text-sm max-w-md mx-auto leading-relaxed mb-10">
+        <p className="text-moss/80 text-sm max-w-md mx-auto leading-relaxed mb-10">
           Every flower here was drawn and planted by someone in the world.
           Browse, feel inspired, and add your own.
         </p>
@@ -124,7 +130,7 @@ function Garden() {
             <p className="font-heading text-2xl text-moss">
               {userFlowers.length}
             </p>
-            <p className="text-sage-dark/50 text-xs mt-0.5">flowers planted</p>
+            <p className="text-moss/80 text-xs mt-0.5">flowers planted</p>
           </div>
           <div
             className="w-px h-8"
@@ -135,7 +141,7 @@ function Garden() {
             <p className="font-heading text-2xl text-moss">
               {userFlowers.length}
             </p>
-            <p className="text-sage-dark/50 text-xs mt-0.5">bloomed today</p>
+            <p className="text-moss/80 text-xs mt-0.5">bloomed today</p>
           </div>
         </div>
 
@@ -161,7 +167,7 @@ function Garden() {
             <p className="text-sm font-semibold text-moss mb-1">
               🌱 Bloomspace is waking up…
             </p>
-            <p className="text-xs text-sage-dark/70 leading-relaxed">
+            <p className="text-xs text-moss/80 leading-relaxed">
               Our little garden has been resting. This may take a few moments.
             </p>
           </div>
@@ -177,7 +183,7 @@ function Garden() {
               border: "1px solid rgba(245, 191, 191, 0.42)",
             }}
           >
-            <p className="text-xs text-sage-dark/75 leading-relaxed">
+            <p className="text-xs text-moss/80 leading-relaxed">
               We couldn&rsquo;t reach the garden&rsquo;s database right now —
               showing flowers saved on this device.
             </p>
@@ -186,7 +192,7 @@ function Garden() {
               onClick={handleRetry}
               className="text-xs font-semibold px-4 py-1.5 rounded-full cursor-pointer transition-colors duration-200"
               style={{
-                color: "rgba(74,112,72,0.85)",
+                color: "rgba(45,74,44,0.85)",
                 border: "1px solid rgba(184,212,182,0.5)",
                 background: "rgba(255,251,245,0.7)",
               }}
@@ -217,7 +223,7 @@ function Garden() {
         <p className="font-heading text-xl text-moss mb-2">
           No blooms yet 🌱
         </p>
-        <p className="text-sage-dark/65 text-sm leading-relaxed">
+        <p className="text-moss/80 text-sm leading-relaxed">
           Be the first to plant one.
         </p>
       </div>

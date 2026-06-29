@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import SEO from "../components/SEO";
 
 const FAQS = [
   {
@@ -15,7 +16,7 @@ const FAQS = [
   },
   {
     emoji: "🌱",
-    question: "Why can I only plant three blooms per session?",
+    question: "Why can I only plant three blooms every 24 hours?",
     answer:
       "To help keep the garden healthy and reduce spam while Bloomspace is still growing.",
   },
@@ -58,7 +59,7 @@ function FaqItem({ emoji, question, answer, isOpen, onToggle }) {
           {emoji} {question}
         </span>
         <span
-          className="shrink-0 text-sage-dark/60 text-lg transition-transform duration-300"
+          className="shrink-0 text-moss/80 text-lg transition-transform duration-300"
           style={{ transform: isOpen ? "rotate(45deg)" : "rotate(0deg)" }}
         >
           +
@@ -69,7 +70,7 @@ function FaqItem({ emoji, question, answer, isOpen, onToggle }) {
           isOpen ? "max-h-48 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <p className="px-5 pb-4 text-sm text-sage-dark/75 leading-relaxed">
+        <p className="px-5 pb-4 text-sm text-moss/80 leading-relaxed">
           {answer}
         </p>
       </div>
@@ -98,9 +99,14 @@ function About() {
       className="flex-1 py-16 px-6"
       style={{ background: "linear-gradient(to bottom, #faf6ef, #f2e9d8)" }}
     >
+      <SEO
+        title="About & FAQ"
+        description="Learn the story behind Bloomspace and find answers to common questions about planting, sharing, and the 24-hour bloom limit."
+        path="/about"
+      />
       {/* Page header */}
       <section className="text-center max-w-2xl mx-auto mb-12">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-sage-dark/45 mb-4">
+        <p className="text-[10px] font-bold tracking-widest uppercase text-moss/80 mb-4">
           About Bloomspace
         </p>
         <h1 className="font-heading text-4xl md:text-5xl text-moss mb-4">
@@ -121,7 +127,7 @@ function About() {
           <h2 className="font-heading text-xl text-moss mb-3">
             Project Origin
           </h2>
-          <p className="text-sage-dark/75 text-sm leading-relaxed">
+          <p className="text-moss/80 text-sm leading-relaxed">
             Bloomspace began at nwHacks 2025 as a small team project: a digital
             garden where people could leave flowers, thoughts, and messages for
             others to find.
@@ -139,7 +145,7 @@ function About() {
           <h2 className="font-heading text-xl text-moss mb-3">
             Original Hackathon Team
           </h2>
-          <ul className="space-y-1.5 text-sage-dark/75 text-sm leading-relaxed">
+          <ul className="space-y-1.5 text-moss/80 text-sm leading-relaxed">
             <li>Vanessa Victorino — Frontend Development</li>
             <li>Erika Feng — Concept &amp; Backend Development</li>
             <li>Zara Shaikh — Presentation</li>
@@ -158,7 +164,7 @@ function About() {
           <h2 className="font-heading text-xl text-moss mb-3">
             Original Prototype
           </h2>
-          <p className="text-sage-dark/75 text-sm leading-relaxed">
+          <p className="text-moss/80 text-sm leading-relaxed">
             The first version focused on the core idea: plant a flower, leave a
             message, and let the garden become a shared space of small
             kindnesses.
@@ -176,7 +182,7 @@ function About() {
           <h2 className="font-heading text-xl text-moss mb-3">
             Revival Version
           </h2>
-          <p className="text-sage-dark/75 text-sm leading-relaxed">
+          <p className="text-moss/80 text-sm leading-relaxed">
             This rebuild expands Bloomspace into a more complete experience with
             flower drawing, bloom sharing, watering, session safeguards,
             duplicate-post protection, wake-up handling, and privacy-friendly
@@ -188,7 +194,7 @@ function About() {
       {/* FAQ */}
       <section id="faq" className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
-          <p className="text-[10px] font-bold tracking-widest uppercase text-sage-dark/45 mb-3">
+          <p className="text-[10px] font-bold tracking-widest uppercase text-moss/80 mb-3">
             Good to Know
           </p>
           <h2 className="font-heading text-3xl md:text-4xl text-moss">

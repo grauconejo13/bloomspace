@@ -94,7 +94,7 @@ function ShareBloomButton({ image, message, author, location }) {
       {status && (
         <p
           className="text-xs text-center max-w-xs"
-          style={{ color: status === STATUS_ERROR ? '#b84444' : 'rgba(74,112,72,0.75)' }}
+          style={{ color: status === STATUS_ERROR ? '#b84444' : 'rgba(45,74,44,0.85)' }}
         >
           {status}
         </p>
