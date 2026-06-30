@@ -218,7 +218,7 @@ function CreateFlower() {
               background: '#fffbf5',
               border: '1px solid rgba(184, 212, 182, 0.35)',
               boxShadow: '0 12px 48px rgba(45, 74, 44, 0.10), 0 2px 8px rgba(45, 74, 44, 0.05)',
-              aspectRatio: '16 / 9',
+              aspectRatio: '1 / 1',
             }}
           >
             <img src={plantedFlower.image} alt="Your planted bloom" className="w-full h-full object-contain" />
