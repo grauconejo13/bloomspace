@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRotateLeft, faRotateRight, faTrashCan, faPalette } from '@fortawesome/free-solid-svg-icons';
 import DrawingCanvas from '../components/DrawingCanvas';
 import PlantConfirmModal from '../components/PlantConfirmModal';
 import ResumeDraftModal from '../components/ResumeDraftModal';
@@ -267,15 +269,18 @@ function CreateFlower() {
         }}
       >
 
-        {/* Toolbar */}
+        {/* Toolbar — three groups (colours / brush size / actions) that stack on
+            mobile and sit inline on sm+. Actions are a single flex item pinned to
+            the right via sm:ml-auto, so they stay grouped together regardless of
+            how many custom colour swatches the palette group grows to. */}
         <div
-          className="flex flex-wrap items-center gap-3 px-5 py-3 border-b"
+          className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center px-5 py-3 border-b"
           style={{
             background: 'rgba(184, 212, 182, 0.10)',
             borderColor: 'rgba(184, 212, 182, 0.28)',
           }}
         >
-          {/* Colour swatches */}
+          {/* 1. Colour controls */}
           <div className="flex items-center gap-1.5 flex-wrap">
             {PRESET_COLORS.map(({ label, value }) => renderColorSwatch(value, label))}
             {customColors.map(value => renderColorSwatch(value))}
@@ -291,7 +296,7 @@ function CreateFlower() {
                 background: 'rgba(255,251,245,0.8)',
               }}
             >
-              <span className="text-[9px] text-moss/80 select-none">+</span>
+              <FontAwesomeIcon icon={faPalette} className="text-moss/80" style={{ width: 10, height: 10 }} />
               <input
                 type="color"
                 value={color}
@@ -302,10 +307,10 @@ function CreateFlower() {
             </label>
           </div>
 
-          {/* Divider */}
+          {/* Divider — sm+ only; on mobile the groups are already separated by stacking */}
           <div className="hidden sm:block w-px h-5" style={{ background: 'rgba(184, 212, 182, 0.5)' }} />
 
-          {/* Stroke size */}
+          {/* 2. Stroke size */}
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-bold tracking-widest uppercase text-moss/80">
               Size
@@ -330,48 +335,61 @@ function CreateFlower() {
             />
           </div>
 
-          {/* Push undo/redo/clear/save to the right */}
-          <div className="flex-1" />
+          {/* 3. Actions — Undo/Redo/Clear stay grouped together; pinned to the
+              right on sm+ via ml-auto, which works per-line even if the colour
+              group above has wrapped to multiple rows. */}
+          <div className="flex items-center gap-1 flex-wrap sm:ml-auto sm:flex-nowrap">
+            <button
+              onClick={() => canvasRef.current?.undo()}
+              aria-label="Undo"
+              title="Undo"
+              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
+              style={{ color: 'rgba(45,74,44,0.80)' }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,212,182,0.22)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+            >
+              <FontAwesomeIcon icon={faRotateLeft} style={{ width: 12, height: 12 }} />
+              Undo
+            </button>
 
-          <button
-            onClick={() => canvasRef.current?.undo()}
-            className="text-xs font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
-            style={{ color: 'rgba(45,74,44,0.80)' }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,212,182,0.22)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-          >
-            Undo
-          </button>
+            <button
+              onClick={() => canvasRef.current?.redo()}
+              aria-label="Redo"
+              title="Redo"
+              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
+              style={{ color: 'rgba(45,74,44,0.80)' }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,212,182,0.22)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+            >
+              <FontAwesomeIcon icon={faRotateRight} style={{ width: 12, height: 12 }} />
+              Redo
+            </button>
 
-          <button
-            onClick={() => canvasRef.current?.redo()}
-            className="text-xs font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
-            style={{ color: 'rgba(45,74,44,0.80)' }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,212,182,0.22)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-          >
-            Redo
-          </button>
+            <button
+              onClick={() => canvasRef.current?.clear()}
+              aria-label="Clear"
+              title="Clear"
+              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
+              style={{ color: 'rgba(45,74,44,0.80)' }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,212,182,0.22)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+            >
+              <FontAwesomeIcon icon={faTrashCan} style={{ width: 12, height: 12 }} />
+              Clear
+            </button>
 
-          <button
-            onClick={() => canvasRef.current?.clear()}
-            className="text-xs font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
-            style={{ color: 'rgba(45,74,44,0.80)' }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,212,182,0.22)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-          >
-            Clear
-          </button>
+            <div className="hidden sm:block w-px h-4" style={{ background: 'rgba(184, 212, 182, 0.5)' }} />
 
-          <button
-            onClick={() => { if (canvasRef.current?.save() === false) setError('Please draw something before saving.'); }}
-            className="text-xs font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
-            style={{ color: 'rgba(45,74,44,0.80)' }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,212,182,0.22)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-          >
-            Save PNG
-          </button>
+            <button
+              onClick={() => { if (canvasRef.current?.save() === false) setError('Please draw something before saving.'); }}
+              className="text-xs font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
+              style={{ color: 'rgba(45,74,44,0.80)' }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(184,212,182,0.22)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+            >
+              Save PNG
+            </button>
+          </div>
         </div>
 
         {/* Canvas */}
