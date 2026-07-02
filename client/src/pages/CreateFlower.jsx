@@ -355,6 +355,7 @@ function CreateFlower() {
               max="20"
               value={strokeSize}
               onChange={e => setStrokeSize(Number(e.target.value))}
+              aria-label="Stroke size"
               className="w-20 accent-sage cursor-pointer"
             />
             {/* Live preview dot — uses current color; in eraser mode it shows as a faded outline */}

@@ -213,7 +213,7 @@ function Home() {
               <span>🌼</span>
             </div>
             <p className="text-moss/80 text-sm leading-snug">
-              128 flowers bloomed in the garden today
+              The garden is growing — come add your bloom.
             </p>
             <div className="flex items-center gap-1.5 mt-1">
               <div

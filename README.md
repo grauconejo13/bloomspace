@@ -15,6 +15,7 @@ The original prototype explored the idea of a shared digital garden for mental w
 * Draw flowers using a digital canvas
 * Customize brush color and stroke size
 * Undo, redo, and clear drawings
+* Erase parts of a drawing without clearing the whole canvas
 * Attach a positive message to each bloom
 * Plant flowers in a shared garden
 * Browse community-created blooms
