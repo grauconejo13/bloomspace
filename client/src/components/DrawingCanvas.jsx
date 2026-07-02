@@ -1,6 +1,6 @@
 import { forwardRef, useRef, useImperativeHandle, useEffect } from 'react';
 
-const DrawingCanvas = forwardRef(function DrawingCanvas({ color, strokeSize }, ref) {
+const DrawingCanvas = forwardRef(function DrawingCanvas({ color, strokeSize, eraser }, ref) {
   const canvasRef = useRef(null);
   const drawing = useRef(false);
   const lastPos = useRef({ x: 0, y: 0 });
@@ -26,7 +26,13 @@ const DrawingCanvas = forwardRef(function DrawingCanvas({ color, strokeSize }, r
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     strokesRef.current.forEach(stroke => {
-      ctx.strokeStyle = stroke.color;
+      if (stroke.eraser) {
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.strokeStyle = 'rgba(0,0,0,1)';
+      } else {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = stroke.color;
+      }
       ctx.lineWidth = stroke.size;
       for (let i = 1; i < stroke.points.length; i++) {
         ctx.beginPath();
@@ -36,6 +42,7 @@ const DrawingCanvas = forwardRef(function DrawingCanvas({ color, strokeSize }, r
       }
     });
 
+    ctx.globalCompositeOperation = 'source-over';
     ctx.strokeStyle = color;
     ctx.lineWidth = strokeSize;
   }
@@ -102,17 +109,31 @@ const DrawingCanvas = forwardRef(function DrawingCanvas({ color, strokeSize }, r
     drawing.current = true;
     const pos = getPos(e);
     lastPos.current = pos;
-    activeStroke.current = { color, size: strokeSize, points: [pos] };
+    activeStroke.current = {
+      color: eraser ? null : color,
+      size: strokeSize,
+      eraser: !!eraser,
+      points: [pos],
+    };
   }
 
   function draw(e) {
     if (!drawing.current) return;
     const ctx = canvasRef.current.getContext('2d');
     const pos = getPos(e);
+    const isErasing = activeStroke.current.eraser;
+    if (isErasing) {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.strokeStyle = 'rgba(0,0,0,1)';
+      ctx.lineWidth = activeStroke.current.size;
+    }
     ctx.beginPath();
     ctx.moveTo(lastPos.current.x, lastPos.current.y);
     ctx.lineTo(pos.x, pos.y);
     ctx.stroke();
+    if (isErasing) {
+      ctx.globalCompositeOperation = 'source-over';
+    }
     lastPos.current = pos;
     activeStroke.current.points.push(pos);
   }
@@ -148,15 +169,15 @@ const DrawingCanvas = forwardRef(function DrawingCanvas({ color, strokeSize }, r
       canvas.removeEventListener('touchmove',  onTouchMove);
       canvas.removeEventListener('touchend',   stopDrawing);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- startDrawing/draw only close over color and strokeSize, both listed
-  }, [color, strokeSize]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- startDrawing/draw close over color, strokeSize, and eraser, all listed
+  }, [color, strokeSize, eraser]);
 
   return (
     <canvas
       ref={canvasRef}
       width={800}
       height={800}
-      className="w-full rounded-2xl cursor-crosshair block"
+      className={`w-full rounded-2xl block ${eraser ? 'cursor-cell' : 'cursor-crosshair'}`}
       style={{
         background: '#fffbf5',
         border: '1.5px dashed rgba(122, 171, 120, 0.38)',

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRotateLeft, faRotateRight, faTrashCan, faPalette } from '@fortawesome/free-solid-svg-icons';
+import { faRotateLeft, faRotateRight, faTrashCan, faPalette, faPen, faEraser } from '@fortawesome/free-solid-svg-icons';
 import DrawingCanvas from '../components/DrawingCanvas';
 import PlantConfirmModal from '../components/PlantConfirmModal';
 import ResumeDraftModal from '../components/ResumeDraftModal';
@@ -41,6 +41,7 @@ function CreateFlower() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isSubmittingRef = useRef(false);
   const clientPlantIdRef = useRef(null);
+  const [eraser, setEraser] = useState(false);
   const [customColors, setCustomColors] = useState(() => getCustomColors());
   const [pendingDraft] = useState(() => getDraft());
   const [showResumePrompt, setShowResumePrompt] = useState(() => !!pendingDraft);
@@ -310,8 +311,41 @@ function CreateFlower() {
           {/* Divider — sm+ only; on mobile the groups are already separated by stacking */}
           <div className="hidden sm:block w-px h-5" style={{ background: 'rgba(184, 212, 182, 0.5)' }} />
 
-          {/* 2. Stroke size */}
-          <div className="flex items-center gap-2">
+          {/* 2. Tool toggle + Stroke size */}
+          <div className="flex items-center gap-3 flex-wrap">
+            {/* Brush / Eraser segmented toggle */}
+            <div
+              className="flex items-center gap-0.5 rounded-full p-0.5"
+              style={{ background: 'rgba(184,212,182,0.18)', border: '1px solid rgba(122,171,120,0.22)' }}
+            >
+              <button
+                onClick={() => setEraser(false)}
+                title="Brush"
+                aria-label="Brush"
+                aria-pressed={!eraser}
+                className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full transition-all duration-150 cursor-pointer"
+                style={!eraser
+                  ? { background: '#fffbf5', color: 'rgba(45,74,44,0.85)', boxShadow: '0 1px 4px rgba(45,74,44,0.10)' }
+                  : { color: 'rgba(45,74,44,0.50)' }}
+              >
+                <FontAwesomeIcon icon={faPen} style={{ width: 10, height: 10 }} />
+              </button>
+              <button
+                onClick={() => setEraser(true)}
+                title="Eraser"
+                aria-label="Eraser"
+                aria-pressed={eraser}
+                className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full transition-all duration-150 cursor-pointer"
+                style={eraser
+                  ? { background: '#fffbf5', color: 'rgba(45,74,44,0.85)', boxShadow: '0 1px 4px rgba(45,74,44,0.10)' }
+                  : { color: 'rgba(45,74,44,0.50)' }}
+              >
+                <FontAwesomeIcon icon={faEraser} style={{ width: 10, height: 10 }} />
+              </button>
+            </div>
+
+            <div className="hidden sm:block w-px h-4" style={{ background: 'rgba(184,212,182,0.5)' }} />
+
             <span className="text-[10px] font-bold tracking-widest uppercase text-moss/80">
               Size
             </span>
@@ -323,13 +357,14 @@ function CreateFlower() {
               onChange={e => setStrokeSize(Number(e.target.value))}
               className="w-20 accent-sage cursor-pointer"
             />
-            {/* Live preview dot */}
+            {/* Live preview dot — uses current color; in eraser mode it shows as a faded outline */}
             <div
               className="rounded-full shrink-0"
               style={{
                 width:  Math.max(6, strokeSize + 2),
                 height: Math.max(6, strokeSize + 2),
-                background: color,
+                background: eraser ? 'transparent' : color,
+                border: eraser ? '1.5px solid rgba(45,74,44,0.30)' : 'none',
                 opacity: 0.75,
               }}
             />
@@ -394,7 +429,7 @@ function CreateFlower() {
 
         {/* Canvas */}
         <div className="px-5 pt-5">
-          <DrawingCanvas ref={canvasRef} color={color} strokeSize={strokeSize} />
+          <DrawingCanvas ref={canvasRef} color={color} strokeSize={strokeSize} eraser={eraser} />
         </div>
 
         {/* Message input */}
