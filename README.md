@@ -137,5 +137,3 @@ The rebuild keeps the heart of the original idea — drawing flowers, sharing ki
 - [GitHub Actions CI](.github/workflows/ci.yml): client lint/build/regression scripts and server entrypoint syntax
 
 **Documentation note:** The planting-limit wording in this README (per 24 hours) and `MEMORY.md` (per browser session) differs. This requires code/test verification before either interpretation is treated as confirmed behavior.
-
-A separate private `bloomspace_v2` repository also exists; its features have not been audited here. Compare versions before merging or duplicating work.
