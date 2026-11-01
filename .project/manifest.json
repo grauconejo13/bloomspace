@@ -52,7 +52,8 @@
   "related_projects": [
     {
       "repository": "grauconejo13/bloomspace_v2",
-      "relationship": "possible-variant-review-before-duplication"
+      "relationship": "alternative-mysql-hostinger-implementation",
+      "distinction": "Separate MySQL backend with Hostinger-oriented database configuration; do not assume identical feature behavior."
     }
   ],
   "last_reviewed": "2026-11-01"
