@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "name": "Bloomspace",
+  "slug": "bloomspace",
+  "repository": "grauconejo13/bloomspace",
+  "visibility": "public",
+  "category": "community-creative-wellness",
+  "status": "public-beta",
+  "purpose": "Let visitors draw digital flowers, add kind messages and share blooms in a community garden.",
+  "target_users": [
+    "community-participants",
+    "creative-expression-users",
+    "portfolio-reviewers"
+  ],
+  "tags": [
+    "web-app",
+    "creative-media",
+    "health-wellness",
+    "backend-api",
+    "database",
+    "privacy"
+  ],
+  "stack": [
+    "react",
+    "vite",
+    "tailwind-css",
+    "express",
+    "nodejs",
+    "supabase",
+    "playwright"
+  ],
+  "capabilities": {
+    "documented": [
+      "flower-drawing",
+      "garden-browsing",
+      "watering",
+      "share-card-png",
+      "supabase-persistence",
+      "local-fallback",
+      "privacy-filtered-analytics",
+      "duplicate-submission-guard"
+    ],
+    "verification_pending": [
+      "planting-limit-semantics",
+      "regression-tests-in-ci",
+      "production-smoke-test"
+    ],
+    "planned": [
+      "database-level-idempotency"
+    ]
+  },
+  "related_projects": [
+    {
+      "repository": "grauconejo13/bloomspace_v2",
+      "relationship": "possible-variant-review-before-duplication"
+    }
+  ],
+  "last_reviewed": "2026-11-01"
+}
