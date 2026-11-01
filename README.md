@@ -124,3 +124,18 @@ Recommended deployment order:
 This version is an independent continuation of the original hackathon project.
 
 The rebuild keeps the heart of the original idea — drawing flowers, sharing kind messages, and creating a community garden — while expanding it into a more polished full-stack experience.
+
+
+## Project discovery and maintenance
+
+**Standard tags:** `web-app`, `creative-media`, `health-wellness`, `backend-api`, `database`, `privacy`.
+
+- [Project manifest](.project/manifest.json): searchable purpose, stack, and capabilities
+- [Capability status](.project/capabilities.md): documented vs verification-pending behavior
+- [Architecture](docs/ARCHITECTURE.md) and [roadmap](docs/ROADMAP.md)
+- [Decision log](docs/DECISIONS.md) and [testing guide](docs/TESTING.md)
+- [GitHub Actions CI](.github/workflows/ci.yml): client lint/build/regression scripts and server entrypoint syntax
+
+**Documentation note:** The planting-limit wording in this README (per 24 hours) and `MEMORY.md` (per browser session) differs. This requires code/test verification before either interpretation is treated as confirmed behavior.
+
+A separate private `bloomspace_v2` repository also exists; its features have not been audited here. Compare versions before merging or duplicating work.
