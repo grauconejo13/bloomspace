@@ -2,6 +2,12 @@
 
 All notable changes to Bloomspace will be documented here.
 
+## Unreleased
+
+### Security / Privacy
+
+* Analytics now stores only allowlisted, validated fields per event (for example the page path). Any other metadata, including nested objects, is dropped before it reaches the database. `page` and `session_id` are length- and format-checked.
+
 ## v1.0.0 — First Public Bloom
 
 Bloomspace began as a small hackathon-style garden for creating, saving, and sharing digital blooms. The first version focused on making the experience feel gentle, expressive, and complete enough for real users to try.
