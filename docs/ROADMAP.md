@@ -9,8 +9,8 @@
 - Client regression scripts for duplicate submission and delayed backend wake-up
 
 ## First verification milestone
-- [ ] Resolve the conflicting planting-limit descriptions (per 24 hours vs per browser session).
-- [ ] Run and confirm existing regression checks locally and in CI.
+- [x] Resolve the conflicting planting-limit descriptions. The code is 3 per rolling 24 hours per browser (`localStorage`), and `MEMORY.md` is corrected.
+- [x] Run and confirm existing regression checks locally and in CI. They pass in GitHub Actions; CI now installs Chromium and serves a preview build.
 - [ ] Verify backend error handling, rate-limiting and Supabase configuration without exposing secrets.
 - [ ] Audit canvas, dialog and form keyboard accessibility.
 - [ ] Validate deployment paths and production smoke tests.

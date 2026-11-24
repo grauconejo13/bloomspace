@@ -136,4 +136,6 @@ The rebuild keeps the heart of the original idea — drawing flowers, sharing ki
 - [Decision log](docs/DECISIONS.md) and [testing guide](docs/TESTING.md)
 - [GitHub Actions CI](.github/workflows/ci.yml): client lint/build/regression scripts and server entrypoint syntax
 
-**Documentation note:** The planting-limit wording in this README (per 24 hours) and `MEMORY.md` (per browser session) differs. This requires code/test verification before either interpretation is treated as confirmed behavior.
+**Planting limit (verified in code, 2026-11-23):** 3 successful plants per rolling 24 hours per browser, stored in `localStorage` (`client/src/utils/plantLimit.js`).
+
+AI coding agents: see [AGENTS.md](AGENTS.md).

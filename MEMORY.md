@@ -18,7 +18,8 @@ Bloomspace is currently positioned as a public beta / portfolio-ready project, n
 * Render for backend hosting
 * Vercel for frontend hosting
 * `localStorage` fallback for MVP resilience
-* `sessionStorage` for browser-session limits and analytics session IDs
+* `localStorage` for the rolling 24-hour plant limit
+* `sessionStorage` for analytics session IDs and per-session custom color slots
 * Playwright for regression testing
 
 ## Routes
@@ -42,8 +43,8 @@ Bloomspace is currently positioned as a public beta / portfolio-ready project, n
 * Optional author/location-style bloom metadata
 * Confirmation modal before planting
 * Duplicate submission protection during final plant confirmation
-* 3-bloom-per-browser-session limit
-* Friendly session-limit message
+* 3-bloom-per-24-hours limit (per browser)
+* Friendly limit message
 * Garden page with flower cards
 * Flower detail view/modal
 * Flower lifespan system
@@ -84,17 +85,21 @@ Bloomspace is currently positioned as a public beta / portfolio-ready project, n
 }
 ```
 
-## Session Plant Limit
+## Plant Limit
 
-Bloomspace currently limits users to 3 successful planted blooms per browser session.
+Bloomspace limits users to 3 successful planted blooms per rolling 24 hours, per browser.
 
-Rules:
+Rules (verified in `client/src/utils/plantLimit.js` and `CreateFlower.jsx`, 2026-11-23):
 
-* Limit is tracked with `sessionStorage`.
+* Tracked as plant timestamps in `localStorage` under `bloomspacePlantTimestamps`. It survives refreshes and new tabs; clearing site data resets it.
+* Timestamps older than 24 hours are pruned, so a slot frees up as each plant ages out.
 * Drawing, clearing, undoing, redoing, or failed saves do not count.
 * Count increments only after a successful plant.
-* On the 4th attempt, the plant button is disabled.
-* The user sees: “You’ve planted 3 blooms this session 🌸 Come back later or refresh your session.”
+* With 3 plants in the window, the plant button is disabled.
+* The user sees: "🌸 You've planted 3 blooms in the last 24 hours. Come back tomorrow to draw more, or water the garden while you wait."
+* This is a client-side courtesy limit, not abuse protection; server-side rate limiting is separate.
+
+(An earlier version of this file described a `sessionStorage` per-session limit. That behavior was replaced.)
 
 ## Duplicate Submission Protection
 
@@ -267,7 +272,7 @@ Completed major launch-prep items:
 * Lifespan/watering mechanic
 * Share Bloom card
 * Native share + PNG fallback
-* 3-bloom session limit
+* 3-bloom-per-24-hours limit
 * Duplicate submission prevention
 * Supabase wake-up UX
 * Privacy-friendly analytics
@@ -311,7 +316,7 @@ Important manual tests:
 * Enter-key spam should create only one bloom
 * Share Bloom works on mobile
 * PNG fallback works on desktop
-* 3-bloom session limit blocks 4th plant
+* 3-blooms-per-24-hours limit blocks the 4th plant
 * Garden loads after refresh
 * Supabase wake-up message appears only after slow load
 * Retry button appears if backend/database fails
@@ -320,7 +325,7 @@ Important manual tests:
 Important automated checks:
 
 * Duplicate submission Playwright test
-* 3-plant session limit Playwright test
+* 3-plant limit Playwright test (planned; not yet a script)
 * Share Bloom Playwright test
 * Supabase wake-up/retry Playwright test
 * Drawing/undo/redo/clear regression checks
