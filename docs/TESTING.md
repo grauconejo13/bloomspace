@@ -14,7 +14,7 @@ npm run test:wakeup-banner
 
 The regression scripts are Playwright scripts that drive the app at `BASE_URL` (default `http://localhost:5173`) and **mock `/api/*`**, so they need a running client (`npm run dev` or `npx vite preview --port 5173`) and Chromium (`npx playwright install chromium`), but no backend or Supabase. CI does exactly this.
 
-CI also installs `server/` dependencies and checks syntax of `server/server.js`. This is a syntax check, **not** backend integration testing.
+CI also installs `server/` dependencies, checks syntax of `server/server.js`, and runs `npm test` in `server/`: `node:test` unit tests for the analytics privacy allowlist (no database needed). These are **not** backend integration tests; nothing in CI talks to Supabase.
 
 ## Manual smoke tests
 1. Draw, erase, undo and redo.

@@ -97,7 +97,7 @@ Tracked events include:
 * Successful native sharing
 * PNG share-card downloads
 
-Bloomspace does not track flower messages, image contents, names, emails, or author/location text in analytics metadata.
+Bloomspace does not track flower messages, image contents, names, emails, or author/location text in analytics metadata. The server enforces this with a per-event allowlist: only known, validated fields (such as the page path) are stored, and anything else is dropped.
 
 ## Deployment
 

@@ -27,11 +27,12 @@ npm run test:wakeup-banner
 
 # server
 cd server && npm ci
-node --check server.js       # CI's only server check (no backend tests yet)
+node --check server.js
+npm test                     # node:test unit tests (analytics privacy); no DB needed
 npm run dev                  # needs server/.env (see .env.example)
 ```
 
-**Definition of done:** client lint, build and both regression scripts pass, plus `node --check server.js`. That's exactly what `.github/workflows/ci.yml` runs. `npm ci` must succeed, so commit `package-lock.json` whenever dependencies change.
+**Definition of done:** client lint, build and both regression scripts pass, plus `node --check server.js` and server `npm test`. That's exactly what `.github/workflows/ci.yml` runs. `npm ci` must succeed, so commit `package-lock.json` whenever dependencies change.
 
 ## Behavior that must not regress
 
@@ -43,7 +44,7 @@ npm run dev                  # needs server/.env (see .env.example)
 
 ## Privacy and content rules
 
-- **Analytics never include** flower messages, drawings, names, emails or author/location text. The server strips blocked metadata keys as defense in depth (`ANALYTICS_METADATA_BLOCKLIST` in `server/middleware/validation.js`), so keep it. It's a top-level-key blocklist; prefer tightening it to an allowlist over loosening it. Analytics must never block or break the app.
+- **Analytics never include** flower messages, drawings, names, emails or author/location text. The server enforces this with a **per-event allowlist** (`ANALYTICS_METADATA_ALLOWLIST` in `server/middleware/validation.js`). Only listed keys with validated values are stored; everything else is dropped. `page` and `session_id` are bounded too. To track a new field, add it to the allowlist with a validator, plus a test in `server/test/`. Never allow free text. Analytics must never block or break the app.
 - User-submitted text is community content: render it as text (no `dangerouslySetInnerHTML`), keep `server/utils/filterWords.js` and the validation middleware, and keep rate limiting.
 - **This repo is public.** Never commit secrets, Supabase keys or project refs, and never mention private repositories or private implementation details in code, docs or commits.
 - The Supabase service key stays server-side only. The client must never get it or any `VITE_*` secret.

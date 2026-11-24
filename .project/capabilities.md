@@ -8,7 +8,8 @@ Drawing canvas with brush editing; community garden; bloom watering and expiry; 
 - Regression scripts (`test:duplicate-submit`, `test:wakeup-banner`) pass in GitHub Actions CI against a local preview build with mocked `/api/*`.
 
 ## Verification required
-- Backend resilience, idempotency and data privacy need ongoing tests (no server tests exist yet; CI only syntax-checks `server.js`).
+- Analytics privacy: a per-event metadata allowlist, plus bounded `page`/`session_id`, is unit-tested in CI (`server/test/`).
+- Backend resilience and idempotency need integration tests (none exist yet; nothing in CI talks to Supabase).
 - Production smoke test (Supabase, Render, Vercel).
 
 ## Not a claim
