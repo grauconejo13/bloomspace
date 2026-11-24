@@ -23,8 +23,25 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      # The regression scripts drive the built app at BASE_URL and mock /api/*,
+      # so no backend, Supabase or secrets are needed.
+      - name: Start preview server
+        run: |
+          npx vite preview --port 5173 --strictPort > preview.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf -o /dev/null http://localhost:5173 && exit 0
+            sleep 1
+          done
+          cat preview.log
+          exit 1
       - run: npm run test:duplicate-submit
+        env:
+          BASE_URL: http://localhost:5173
       - run: npm run test:wakeup-banner
+        env:
+          BASE_URL: http://localhost:5173
   server:
     runs-on: ubuntu-latest
     defaults:
