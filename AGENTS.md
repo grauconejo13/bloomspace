@@ -43,7 +43,7 @@ npm run dev                  # needs server/.env (see .env.example)
 
 ## Privacy and content rules
 
-- **Analytics never include** flower messages, drawings, names, emails or author/location text. The server filters metadata as defense in depth, so keep that filter. Analytics must never block or break the app.
+- **Analytics never include** flower messages, drawings, names, emails or author/location text. The server strips blocked metadata keys as defense in depth (`ANALYTICS_METADATA_BLOCKLIST` in `server/middleware/validation.js`), so keep it. It's a top-level-key blocklist; prefer tightening it to an allowlist over loosening it. Analytics must never block or break the app.
 - User-submitted text is community content: render it as text (no `dangerouslySetInnerHTML`), keep `server/utils/filterWords.js` and the validation middleware, and keep rate limiting.
 - **This repo is public.** Never commit secrets, Supabase keys or project refs, and never mention private repositories or private implementation details in code, docs or commits.
 - The Supabase service key stays server-side only. The client must never get it or any `VITE_*` secret.
